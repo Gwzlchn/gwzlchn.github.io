@@ -270,7 +270,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://gwzlchn.me/2017/03/11/study/intall-latex/">
+    <link itemprop="mainEntityOfPage" href="http://gwzlchn.me/2017/03/11/配置LATEX/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Zelin">
@@ -292,7 +292,7 @@
             
               
                 
-                <a class="post-title-link" href="/2017/03/11/study/intall-latex/" itemprop="url">
+                <a class="post-title-link" href="/2017/03/11/配置LATEX/" itemprop="url">
                   配置latex环境小结
                 </a>
               
@@ -350,8 +350,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/03/11/study/intall-latex/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/11/study/intall-latex/" itemprop="commentCount"></span>
+                <a href="/2017/03/11/配置LATEX/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/11/配置LATEX/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -388,9 +388,9 @@
 </li>
 <li><p>安装实时预览PDF软件SumatraPDF</p>
 <p><a href="http://www.sumatrapdfreader.org/download-free-pdf-viewer.html" target="_blank" rel="external">Sumatra PDF</a></p>
-<hr>
 </li>
 </ol>
+<hr>
 <h2 id="配置Atom"><a href="#配置Atom" class="headerlink" title="配置Atom"></a>配置Atom</h2><ol>
 <li><p>安装插件</p>
 <p>Ctrl+shift+P输入settings调出设置页，在左侧选项卡有Install选项，搜索以下项目并安装</p>
@@ -401,6 +401,8 @@
 <li>activate-power-mode(可选，用于美化)</li>
 </ul>
 </li>
+</ol>
+<ol>
 <li><p>配置Atom</p>
 <p>在Packages选项卡中找到Latex 插件进行设置</p>
 <ol>
@@ -413,8 +415,8 @@
 </ol>
 </li>
 </ol>
-<p>至此，环境设置部分完成</p>
-<hr>
+<pre><code>至此，环境设置部分完成
+</code></pre><hr>
 <h2 id="测试环境"><a href="#测试环境" class="headerlink" title="测试环境"></a>测试环境</h2><p>复制下面整段代码到你的Atom编辑器中</p>
 <p>保存时后缀名为<code>.tex</code>，编码为<code>UTF-8</code></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">\documentclass[UTF8]&#123;article&#125;</div><div class="line">\author &#123;Author&#125;</div><div class="line">\title &#123;Title&#125;</div><div class="line">\usepackage&#123;ctex&#125;</div><div class="line">\usepackage&#123;amsmath&#125;</div><div class="line">\usepackage&#123;amssymb&#125;</div><div class="line">\begin&#123;document&#125;</div><div class="line">\maketitle</div><div class="line">\section&#123;First section&#125; test1.</div><div class="line">    \subsection&#123;First subsection&#125; test2.</div><div class="line">        \subsubsection&#123;First double subsection&#125;</div><div class="line">            \paragraph&#123;Fist paragraph&#125; test3.</div><div class="line">                \subparagraph&#123;First subparagraph&#125; test4.</div><div class="line">    \subsection&#123;Second subsection&#125;</div><div class="line">        \paragraph&#123;段落&#125; 中文测试。</div><div class="line">\\</div><div class="line">Hello World! \\ % This is comment</div><div class="line">Hello \LaTeX ! \\</div><div class="line"></div><div class="line">$\lim\limits_&#123;n \rightarrow +\infty&#125; P\lbrace\frac&#123;\sum\limits_&#123;i=1&#125;&#123;n&#125;Xi - n\cdot EX&#125;&#123; \sqrt&#123;n \cdot DX&#125; &#125;  \leqslant x\rbrace = \Phi(x)$ \\</div><div class="line"></div><div class="line">$P\lbrace a&lt;X&lt;b \rbrace \approx \Phi(\frac&#123;b - n\cdot EX&#125;&#123;\sqrt &#123;n\cdot DX&#125;&#125;) - \Phi(\frac&#123;a - n\cdot EX&#125;&#123;\sqrt&#123;n\cdot DX&#125; &#125;)$ \\</div><div class="line"></div><div class="line">$F(x,y) = F_&#123;X&#125;(x)F_&#123;Y&#125;(y)$</div><div class="line">\end&#123;document&#125;</div></pre></td></tr></table></figure>
