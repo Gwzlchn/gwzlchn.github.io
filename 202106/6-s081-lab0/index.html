@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html lang="zh-CN" data-default-color-scheme=&#34;light&#34;>
+<html lang="zh-CN" data-default-color-scheme=light>
 
 
 
@@ -9,42 +9,54 @@
   <meta charset="UTF-8">
   <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
   <link rel="icon" href="/img/favicon.ico">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
   
   <meta name="theme-color" content="#080000">
-  <meta name="description" content="">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
+    <meta name="description" content="写在前面的话为了更好地理解RISC-V指令集，也为了熟悉QEMU，所以选择刷一遍MIT-6.S081的实验。希望不仅仅以做Lab为目的，同时也精读几篇OS领域经典文章。  可能好多人都卡在环境准备上，但后来我发现：趁早动手做实验，比准备环境更重要~ 环境搭建参考 6.S081 官方的配置教程：Tools 本人用的环境是基于Qemu(KVM)上的Ubuntu 20.04。 首先安装RISC-V工具链">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[MIT-6.S081&#x2F;Fall2020] 实验笔记零 Lab0: Preparation">
+<meta property="og:url" content="http://example.com/202106/6-s081-lab0/index.html">
+<meta property="og:site_name" content="Zelin&#39;s Blog">
+<meta property="og:description" content="写在前面的话为了更好地理解RISC-V指令集，也为了熟悉QEMU，所以选择刷一遍MIT-6.S081的实验。希望不仅仅以做Lab为目的，同时也精读几篇OS领域经典文章。  可能好多人都卡在环境准备上，但后来我发现：趁早动手做实验，比准备环境更重要~ 环境搭建参考 6.S081 官方的配置教程：Tools 本人用的环境是基于Qemu(KVM)上的Ubuntu 20.04。 首先安装RISC-V工具链">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/6.S081/gdb.png">
+<meta property="article:published_time" content="2021-06-22T13:21:31.000Z">
+<meta property="article:modified_time" content="2022-05-18T08:39:05.289Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="MIT">
+<meta property="article:tag" content="Open Course">
+<meta property="article:tag" content="6.S081">
+<meta property="article:tag" content="OS">
+<meta property="article:tag" content="Lab">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/6.S081/gdb.png">
+  
+  
+  
   <title>[MIT-6.S081/Fall2020] 实验笔记零 Lab0: Preparation - Zelin&#39;s Blog</title>
 
-  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
 
-  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
-  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
 
-  
-    
-    
-      
-      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/atom-one-dark.min.css" />
-    
-  
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
 
-  
-    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
-  
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
 
 <!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
 
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
 
 
 
@@ -53,24 +65,44 @@
 
 <link  rel="stylesheet" href="/css/main.css" />
 
-<!-- 自定义样式保持在最底部 -->
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
 
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
-    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vyfV0Jz8OincT54vffevrlx0-gzGzoHsz","app_key":"abuQhfiaX9zRJg6PYac65qfa","server_url":"https://vyfv0jz8.lc-cn-n1-shared.com"}},"search_path":"/local-search.xml"};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.0","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vyfV0Jz8OincT54vffevrlx0-gzGzoHsz","app_key":"abuQhfiaX9zRJg6PYac65qfa","server_url":"https://vyfv0jz8.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
   </script>
   <script  src="/js/utils.js" ></script>
   <script  src="/js/color-schema.js" ></script>
-<meta name="generator" content="Hexo 5.4.0"></head>
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
-  <header style="height: 50vh;">
-    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 50vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
-    <a class="navbar-brand"
-       href="/">&nbsp;<strong>Zelin's Blog</strong>&nbsp;</a>
+    <a class="navbar-brand" href="/">
+      <strong>Zelin&#39;s Blog</strong>
+    </a>
 
     <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
             data-target="#navbarSupportedContent"
@@ -144,13 +176,15 @@
         
         
           <li class="nav-item" id="search-btn">
-            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
-                class="iconfont icon-search"></i>&nbsp;</a>
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
           </li>
+          
         
         
           <li class="nav-item" id="color-toggle-btn">
-            <a class="nav-link" target="_self">&nbsp;<i
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
                 class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
           </li>
         
@@ -159,59 +193,69 @@
   </div>
 </nav>
 
-    <div class="banner" id="banner" parallax=true
-         style="background: url('/img/banner.jpg') no-repeat center center;
-           background-size: cover;">
-      <div class="full-bg-img">
-        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
-          <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="[MIT-6.S081/Fall2020] 实验笔记零 Lab0: Preparation">
-              
-            </span>
-
-            
-              <div class="mt-3">
-  
-  
-    <span class="post-meta">
-      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-06-22 21:21" pubdate>
-        星期二, 六月 22日 2021, 9:21 晚上
-      </time>
-    </span>
-  
-</div>
-
-<div class="mt-1">
-  
-    
-    <span class="post-meta mr-2">
-      <i class="iconfont icon-chart"></i>
-      883 字
-    </span>
   
 
-  
-
-  
-  
-    
-      <!-- LeanCloud 统计文章PV -->
-      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
-        <i class="iconfont icon-eye" aria-hidden="true"></i>
-        <span id="leancloud-page-views"></span> 次
-      </span>
-    
-  
-</div>
-
-            
-          </div>
-
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/banner.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="[MIT-6.S081/Fall2020] 实验笔记零 Lab0: Preparation"></span>
           
         </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-06-22 21:21" pubdate>
+          星期二, 六月 22日 2021, 9:21 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          3.5k 字
+        
+      </span>
+    
+
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
       </div>
+
+      
     </div>
+  </div>
+</div>
+
+</div>
+
   </header>
 
   <main>
@@ -220,29 +264,34 @@
 
 <div class="container-fluid nopadding-x">
   <div class="row nomargin-x">
-    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
     <div class="col-lg-8 nopadding-x-md">
       <div class="container nopadding-x-md" id="board-ctn">
-        <div class="py-5" id="board">
+        <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
             <h1 style="display: none">[MIT-6.S081/Fall2020] 实验笔记零 Lab0: Preparation</h1>
             
             <div class="markdown-body">
+              
               <h2 id="写在前面的话"><a href="#写在前面的话" class="headerlink" title="写在前面的话"></a>写在前面的话</h2><p>为了更好地理解RISC-V指令集，也为了熟悉QEMU，所以选择刷一遍MIT-6.S081的实验。希望不仅仅以做Lab为目的，同时也精读几篇OS领域经典文章。</p>
 <hr>
 <p><strong>可能好多人都卡在环境准备上，但后来我发现：趁早动手做实验，比准备环境更重要~</strong></p>
 <h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><p>参考 6.S081 官方的配置教程：<a target="_blank" rel="noopener" href="https://pdos.csail.mit.edu/6.S081/2020/tools.html">Tools</a></p>
 <p>本人用的环境是基于<code>Qemu(KVM)</code>上的<code>Ubuntu 20.04</code>。</p>
 <p>首先安装RISC-V工具链、GDB-Multiarch、QEMU：</p>
-<figure class="highlight bash"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs bash">sudo apt-get install git build-essential gdb-multiarch qemu-system-misc gcc-riscv64-linux-gnu  binutils-riscv64-linux-gnu gcc-riscv64-unknown-elf<br><br><span class="hljs-comment"># fix qemu</span><br>sudo apt-get remove qemu-system-misc<br>sudo apt-get install qemu-system-misc=1:4.2-3ubuntu6<br></code></pre></div></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo apt-get install git build-essential gdb-multiarch qemu-system-misc gcc-riscv64-linux-gnu  binutils-riscv64-linux-gnu gcc-riscv64-unknown-elf<br><br><span class="hljs-comment"># fix qemu</span><br>sudo apt-get remove qemu-system-misc<br>sudo apt-get install qemu-system-misc=1:4.2-3ubuntu6<br></code></pre></td></tr></table></figure>
 
 <p>检查一遍自己的环境</p>
-<figure class="highlight bash"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs bash">$ riscv64-linux-gnu-gcc --version<br>riscv64-linux-gnu-gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0<br>Copyright (C) 2019 Free Software Foundation, Inc.<br>This is free software; see the <span class="hljs-built_in">source</span> <span class="hljs-keyword">for</span> copying conditions.  There is NO<br>warranty; not even <span class="hljs-keyword">for</span> MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.<br><br>$ qemu-system-riscv64 --version<br>QEMU emulator version 4.2.0 (Debian 1:4.2-3ubuntu6)<br>Copyright (c) 2003-2019 Fabrice Bellard and the QEMU Project developers<br><br>$ riscv64-unknown-elf-gcc --version<br>riscv64-unknown-elf-gcc () 9.3.0<br>Copyright (C) 2019 Free Software Foundation, Inc.<br>This is free software; see the <span class="hljs-built_in">source</span> <span class="hljs-keyword">for</span> copying conditions.  There is NO<br>warranty; not even <span class="hljs-keyword">for</span> MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.<br></code></pre></div></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ riscv64-linux-gnu-gcc --version<br>riscv64-linux-gnu-gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0<br>Copyright (C) 2019 Free Software Foundation, Inc.<br>This is free software; see the <span class="hljs-built_in">source</span> <span class="hljs-keyword">for</span> copying conditions.  There is NO<br>warranty; not even <span class="hljs-keyword">for</span> MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.<br><br>$ qemu-system-riscv64 --version<br>QEMU emulator version 4.2.0 (Debian 1:4.2-3ubuntu6)<br>Copyright (c) 2003-2019 Fabrice Bellard and the QEMU Project developers<br><br>$ riscv64-unknown-elf-gcc --version<br>riscv64-unknown-elf-gcc () 9.3.0<br>Copyright (C) 2019 Free Software Foundation, Inc.<br>This is free software; see the <span class="hljs-built_in">source</span> <span class="hljs-keyword">for</span> copying conditions.  There is NO<br>warranty; not even <span class="hljs-keyword">for</span> MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.<br></code></pre></td></tr></table></figure>
 
 
 <h2 id="测试环境"><a href="#测试环境" class="headerlink" title="测试环境"></a>测试环境</h2><p>能在<code>QEMU</code>中启动<code>xv6</code>，环境就算准备完了，可以动手做实验了~</p>
-<figure class="highlight bash"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs bash">$ git <span class="hljs-built_in">clone</span> git://g.csail.mit.edu/xv6-labs-2020<br>Cloning into <span class="hljs-string">&#x27;xv6-labs-2020&#x27;</span>...<br>...<br>$ <span class="hljs-built_in">cd</span> xv6-labs-2020<br>$ git checkout util<br>Branch <span class="hljs-string">&#x27;util&#x27;</span> <span class="hljs-built_in">set</span> up to track remote branch <span class="hljs-string">&#x27;util&#x27;</span> from <span class="hljs-string">&#x27;origin&#x27;</span>.<br>Switched to a new branch <span class="hljs-string">&#x27;util&#x27;</span><br><br>$ make qemu<br>···<br>xv6 kernel is booting<br><br>hart 2 starting<br>hart 1 starting<br>init: starting sh<br>$ ls<br>.              1 1 1024<br>..             1 1 1024<br>README         2 2 2059<br>xargstest.sh   2 3 93<br>cat            2 4 24256<br><span class="hljs-built_in">echo</span>           2 5 23080<br>(...other files)<br><br></code></pre></div></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ git <span class="hljs-built_in">clone</span> git://g.csail.mit.edu/xv6-labs-2020<br>Cloning into <span class="hljs-string">&#x27;xv6-labs-2020&#x27;</span>...<br>...<br>$ <span class="hljs-built_in">cd</span> xv6-labs-2020<br>$ git checkout util<br>Branch <span class="hljs-string">&#x27;util&#x27;</span> <span class="hljs-built_in">set</span> up to track remote branch <span class="hljs-string">&#x27;util&#x27;</span> from <span class="hljs-string">&#x27;origin&#x27;</span>.<br>Switched to a new branch <span class="hljs-string">&#x27;util&#x27;</span><br><br>$ make qemu<br>···<br>xv6 kernel is booting<br><br>hart 2 starting<br>hart 1 starting<br>init: starting sh<br>$ ls<br>.              1 1 1024<br>..             1 1 1024<br>README         2 2 2059<br>xargstest.sh   2 3 93<br>cat            2 4 24256<br><span class="hljs-built_in">echo</span>           2 5 23080<br>(...other files)<br><br></code></pre></td></tr></table></figure>
 
 <p>退出 <code>QEMU</code> 快捷键是 <code>Ctrl-a + x</code></p>
 <p>好了，我们现在可以动手做实验了。</p>
@@ -250,66 +299,105 @@
 <li><p>首先用 <code>tmux</code> 开两个终端窗口。</p>
 </li>
 <li><p>第一个窗口键入<code>make qemu-gdb</code>.</p>
- <figure class="highlight bash"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs bash">$ make qemu-gdb<br>*** Now run <span class="hljs-string">&#x27;gdb&#x27;</span> <span class="hljs-keyword">in</span> another window. qemu-system-riscv64 -machine virt -bios none -kernel kernel/kernel -m 128M -smp 3 -nographic -drive file=fs.img,<span class="hljs-keyword">if</span>=none,format=raw,id=x0 -device virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0 -S -gdb tcp::26000<br></code></pre></div></td></tr></table></figure></li>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ make qemu-gdb<br>*** Now run <span class="hljs-string">&#x27;gdb&#x27;</span> <span class="hljs-keyword">in</span> another window. qemu-system-riscv64 -machine virt -bios none -kernel kernel/kernel -m 128M -smp 3 -nographic -drive file=fs.img,<span class="hljs-keyword">if</span>=none,format=raw,id=x0 -device virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0 -S -gdb tcp::26000<br></code></pre></td></tr></table></figure></li>
 <li><p>在第二个窗口中:<br>3.1. 修改自己 <code>home</code> 目录下的 <code>.gdbinit</code> 文件，允许 <code>gdb</code> 在<code>xv6-labs-2020</code>这个目录启动的时候，加载该文件夹下的 <code>.gdbinit</code> 文件。 </p>
- <figure class="highlight bash"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs bash"><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;add-auto-load-safe-path <span class="hljs-subst">$(pwd)</span>/.gdbinit &quot;</span> &gt;&gt; ~/.gdbinit<br></code></pre></div></td></tr></table></figure>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;add-auto-load-safe-path <span class="hljs-subst">$(pwd)</span>/.gdbinit &quot;</span> &gt;&gt; ~/.gdbinit<br></code></pre></td></tr></table></figure>
 
 <p> 3.2. 启动 <code>gdb-multiarch</code></p>
- <figure class="highlight bash"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs bash">$ gdb-multiarch      <br>GNU gdb (Ubuntu 9.2-0ubuntu1~20.04) 9.2<br>Copyright (C) 2020 Free Software Foundation, Inc.<br>License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.ht<br>ml&gt;<br>This is free software: you are free to change and redistribute it.<br>There is NO WARRANTY, to the extent permitted by law.<br>Type <span class="hljs-string">&quot;show copying&quot;</span> and <span class="hljs-string">&quot;show warranty&quot;</span> <span class="hljs-keyword">for</span> details.<br>This GDB was configured as <span class="hljs-string">&quot;x86_64-linux-gnu&quot;</span>.<br>Type <span class="hljs-string">&quot;show configuration&quot;</span> <span class="hljs-keyword">for</span> configuration details.<br>For bug reporting instructions, please see:<br>&lt;http://www.gnu.org/software/gdb/bugs/&gt;.<br>Find the GDB manual and other documentation resources online at:<br>    &lt;http://www.gnu.org/software/gdb/documentation/&gt;.<br><br>For <span class="hljs-built_in">help</span>, <span class="hljs-built_in">type</span> <span class="hljs-string">&quot;help&quot;</span>.<br>Type <span class="hljs-string">&quot;apropos word&quot;</span> to search <span class="hljs-keyword">for</span> commands related to <span class="hljs-string">&quot;word&quot;</span>.<br>The target architecture is assumed to be riscv:rv64<br>warning: No executable has been specified and target does not support<br>determining executable automatically.  Try using the <span class="hljs-string">&quot;file&quot;</span> <span class="hljs-built_in">command</span>.<br>0x0000000000001000 <span class="hljs-keyword">in</span> ?? ()<br>(gdb)<br></code></pre></div></td></tr></table></figure>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ gdb-multiarch      <br>GNU gdb (Ubuntu 9.2-0ubuntu1~20.04) 9.2<br>Copyright (C) 2020 Free Software Foundation, Inc.<br>License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.ht<br>ml&gt;<br>This is free software: you are free to change and redistribute it.<br>There is NO WARRANTY, to the extent permitted by law.<br>Type <span class="hljs-string">&quot;show copying&quot;</span> and <span class="hljs-string">&quot;show warranty&quot;</span> <span class="hljs-keyword">for</span> details.<br>This GDB was configured as <span class="hljs-string">&quot;x86_64-linux-gnu&quot;</span>.<br>Type <span class="hljs-string">&quot;show configuration&quot;</span> <span class="hljs-keyword">for</span> configuration details.<br>For bug reporting instructions, please see:<br>&lt;http://www.gnu.org/software/gdb/bugs/&gt;.<br>Find the GDB manual and other documentation resources online at:<br>    &lt;http://www.gnu.org/software/gdb/documentation/&gt;.<br><br>For <span class="hljs-built_in">help</span>, <span class="hljs-built_in">type</span> <span class="hljs-string">&quot;help&quot;</span>.<br>Type <span class="hljs-string">&quot;apropos word&quot;</span> to search <span class="hljs-keyword">for</span> commands related to <span class="hljs-string">&quot;word&quot;</span>.<br>The target architecture is assumed to be riscv:rv64<br>warning: No executable has been specified and target does not support<br>determining executable automatically.  Try using the <span class="hljs-string">&quot;file&quot;</span> <span class="hljs-built_in">command</span>.<br>0x0000000000001000 <span class="hljs-keyword">in</span> ?? ()<br>(gdb)<br></code></pre></td></tr></table></figure>
 
 <p>3.3  <strong>给代码打断点</strong>  </p>
 <ul>
-<li> <code>file user/_ls</code></li>
-<li> <code>b main</code></li>
-<li> <code>c</code></li>
-<li> 之后就是正常的<code>GDB</code>  使用流程了</li>
+<li><code>file user/_ls</code></li>
+<li><code>b main</code></li>
+<li><code>c</code></li>
+<li>之后就是正常的<code>GDB</code>  使用流程了</li>
 </ul>
 <p> <strong>第二个窗口：</strong></p>
- <figure class="highlight bash"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs bash">(gdb) file user/_ls<br>Reading symbols from user/_ls...<br>(gdb) b main<br>Breakpoint 1 at 0x27a: file user/ls.c, line 75.<br>(gdb) c<br>Continuing.<br>[Switching to Thread 1.3]<br><br>Thread 3 hit Breakpoint 1, main (argc=0, argv=0x6c &lt;fmtname+108&gt;)<br>    at user/ls.c:75<br>75      &#123;<br>(gdb)<br></code></pre></div></td></tr></table></figure>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash">(gdb) file user/_ls<br>Reading symbols from user/_ls...<br>(gdb) b main<br>Breakpoint 1 at 0x27a: file user/ls.c, line 75.<br>(gdb) c<br>Continuing.<br>[Switching to Thread 1.3]<br><br>Thread 3 hit Breakpoint 1, main (argc=0, argv=0x6c &lt;fmtname+108&gt;)<br>    at user/ls.c:75<br>75      &#123;<br>(gdb)<br></code></pre></td></tr></table></figure>
 
 <p> <strong>第一个窗口</strong></p>
- <figure class="highlight bash"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs bash">(......)<br>xv6 kernel is booting                                        <br>                                                                <br>hart 1 starting                                                  <br>hart 2 starting                                                  <br>init: starting sh                                                <br>$ ls<br>(等待 gdb 发送 <span class="hljs-built_in">continue</span> 信号)<br></code></pre></div></td></tr></table></figure>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">(......)<br>xv6 kernel is booting                                        <br>                                                                <br>hart 1 starting                                                  <br>hart 2 starting                                                  <br>init: starting sh                                                <br>$ ls<br>(等待 gdb 发送 <span class="hljs-built_in">continue</span> 信号)<br></code></pre></td></tr></table></figure>
 <p> <img src="/img/6.S081/gdb.png" srcset="/img/loading.gif" lazyload alt="图1：在QEMU中使用GDB"></p>
 </li>
 <li><p>之后我们就可以正常地通过 <code>GDB</code> 调试程序了~</p>
 </li>
 </ol>
 
+              
             </div>
-            <hr>
+            <hr/>
             <div>
-              <div class="post-metas mb-3">
-                
-                
-                  <div class="post-meta">
-                    <i class="iconfont icon-tags"></i>
-                    
-                      <a class="hover-with-bg" href="/tags/MIT/">MIT</a>
-                    
-                      <a class="hover-with-bg" href="/tags/Open-Course/">Open Course</a>
-                    
-                      <a class="hover-with-bg" href="/tags/6-S081/">6.S081</a>
-                    
-                      <a class="hover-with-bg" href="/tags/OS/">OS</a>
-                    
-                      <a class="hover-with-bg" href="/tags/Lab/">Lab</a>
-                    
-                  </div>
-                
-              </div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/MIT/">#MIT</a>
+      
+        <a href="/tags/Open-Course/">#Open Course</a>
+      
+        <a href="/tags/6-S081/">#6.S081</a>
+      
+        <a href="/tags/OS/">#OS</a>
+      
+        <a href="/tags/Lab/">#Lab</a>
+      
+    </div>
+  
+</div>
+
+
               
-                <p class="note note-warning">
-                  
-                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
-                  
-                </p>
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>[MIT-6.S081/Fall2020] 实验笔记零 Lab0: Preparation</div>
+      <div>http://example.com/202106/6-s081-lab0/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年6月22日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
               
-              
-                <div class="post-prevnext">
+                <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/202107/tmux-tutorial/">
+                      <a href="/202107/tmux-tutorial/" title="Tmux配置与美化">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">Tmux配置与美化</span>
                         <span class="visible-mobile">上一篇</span>
@@ -319,7 +407,7 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/202106/Hexo-CI/">
+                      <a href="/202106/Hexo-CI/" title="使用Github Actions自动部署Hexo博客">
                         <span class="hidden-mobile">使用Github Actions自动部署Hexo博客</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
@@ -331,17 +419,13 @@
             </div>
 
             
-              <!-- Comments -->
-              <article class="comments" id="comments" lazyload>
-                
-                  
-                
-                
+  <article id="comments" lazyload>
+    
   <div id="gitalk-container"></div>
   <script type="text/javascript">
     Fluid.utils.loadComments('#gitalk-container', function() {
       Fluid.utils.createCssLink('/css/gitalk.css')
-      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.7.2/gitalk.min.js', function() {
         var options = Object.assign(
           {"clientID":"92499b3e9ca46e054919","clientSecret":"eef0bc1146a28cdb3d17fd4cf149158cab4ffa2f","repo":"gwzlchn.github.io","owner":"Gwzlchn","admin":["Gwzlchn"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
           {
@@ -356,31 +440,62 @@
   <noscript>Please enable JavaScript to view the comments</noscript>
 
 
-              </article>
-            
+  </article>
+
+
           </article>
         </div>
       </div>
     </div>
-    
-      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
-        <div id="toc">
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
   <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
   <div class="toc-body" id="toc-body"></div>
 </div>
 
-      </div>
-    
+
+
+  </aside>
+
+
+    </div>
   </div>
 </div>
 
-<!-- Custom -->
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
 
 
     
 
     
-      <a id="scroll-top-button" href="#" role="button">
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
         <i class="iconfont icon-arrowup" aria-hidden="true"></i>
       </a>
     
@@ -399,14 +514,14 @@
       <div class="modal-body mx-3">
         <div class="md-form mb-5">
           <input type="text" id="local-search-input" class="form-control validate">
-          <label data-error="x" data-success="v"
-                 for="local-search-input">关键词</label>
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
         </div>
         <div class="list-group" id="local-search-result"></div>
       </div>
     </div>
   </div>
 </div>
+
     
 
     
@@ -418,47 +533,49 @@
     
   </main>
 
-  <footer class="text-center mt-5 py-3">
-  <div class="footer-content">
-     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Powered by Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>With Fluid Theme</span></a> 
-  </div>
+  <footer>
+    <div class="footer-inner">
   
-  <div class="statistics">
-    
-    
-
-    
-      
-        <!-- LeanCloud 统计PV -->
-        <span id="leancloud-site-pv-container" style="display: none">
-            总访问量 
-            <span id="leancloud-site-pv"></span>
-             次
-          </span>
-      
-      
-        <!-- LeanCloud 统计UV -->
-        <span id="leancloud-site-uv-container" style="display: none">
-            总访客数 
-            <span id="leancloud-site-uv"></span>
-             人
-          </span>
-      
-
-    
-  </div>
-
-
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Powered by Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>With Fluid Theme</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
   
 
   
-</footer>
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
 
-
-  <!-- SCRIPTS -->
   
-  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
-  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
 
   <script>
     NProgress.configure({"showSpinner":false,"trickleSpeed":100})
@@ -469,12 +586,47 @@
   </script>
 
 
-<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
-<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
 <script  src="/js/events.js" ></script>
 <script  src="/js/plugins.js" ></script>
 
-<!-- Plugins -->
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
 
 
   
@@ -483,76 +635,155 @@
 
 
 
+
   
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.0/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
 
 
+  <script>
+  (function() {
+    var enableLang = CONFIG.code_language.enable && CONFIG.code_language.default;
+    var enableCopy = CONFIG.copy_btn;
+    if (!enableLang && !enableCopy) {
+      return;
+    }
 
-  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+    function getBgClass(ele) {
+      return Fluid.utils.getBackgroundLightness(ele) >= 0 ? 'code-widget-light' : 'code-widget-dark';
+    }
+
+    var copyTmpl = '';
+    copyTmpl += '<div class="code-widget">';
+    copyTmpl += 'LANG';
+    copyTmpl += '</div>';
+    jQuery('.markdown-body pre').each(function() {
+      var $pre = jQuery(this);
+      if ($pre.find('code.mermaid').length > 0) {
+        return;
+      }
+      if ($pre.find('span.line').length > 0) {
+        return;
+      }
+
+      var lang = '';
+
+      if (enableLang) {
+        lang = CONFIG.code_language.default;
+        if ($pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2 && $pre.children().hasClass('hljs')) {
+          lang = $pre[0].children[0].classList[1];
+        } else if ($pre[0].getAttribute('data-language')) {
+          lang = $pre[0].getAttribute('data-language');
+        } else if ($pre.parent().hasClass('sourceCode') && $pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2) {
+          lang = $pre[0].children[0].classList[1];
+          $pre.parent().addClass('code-wrapper');
+        } else if ($pre.parent().hasClass('markdown-body') && $pre[0].classList.length === 0) {
+          $pre.wrap('<div class="code-wrapper"></div>');
+        }
+        lang = lang.toUpperCase().replace('NONE', CONFIG.code_language.default);
+      }
+      $pre.append(copyTmpl.replace('LANG', lang).replace('code-widget">',
+        getBgClass($pre[0]) + (enableCopy ? ' code-widget copy-btn" data-clipboard-snippet><i class="iconfont icon-copy"></i>' : ' code-widget">')));
+
+      if (enableCopy) {
+        Fluid.utils.createScript('https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js', function() {
+          var clipboard = new window.ClipboardJS('.copy-btn', {
+            target: function(trigger) {
+              var nodes = trigger.parentNode.childNodes;
+              for (var i = 0; i < nodes.length; i++) {
+                if (nodes[i].tagName === 'CODE') {
+                  return nodes[i];
+                }
+              }
+            }
+          });
+          clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-copy', 'icon-success');
+            setTimeout(function() {
+              e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-success', 'icon-copy');
+            }, 2000);
+          });
+        });
+      }
+    });
+  })();
+</script>
 
 
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
 
-  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
 
 
-
-  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
-
-
-
-  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
-
-
+  <script>Fluid.plugins.imageCaption();</script>
 
   <script  src="/js/local-search.js" ></script>
-
-
-
 
   <script defer src="/js/leancloud.js" ></script>
 
 
 
-  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
-  <script>
-    (function (window, document) {
-      var typing = Fluid.plugins.typing;
-      var title = document.getElementById('subtitle').title;
-      
-      typing(title)
-      
-    })(window, document);
-  </script>
 
 
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-
-
-
-<!-- 主题的启动项 保持在最底部 -->
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
 <script  src="/js/boot.js" ></script>
 
 
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
 </body>
 </html>
