@@ -18,26 +18,26 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="介绍本文将介绍如何利用Github Actions功能自动部署博客。这样本地就不需要安装Node.js以及Hexo包，写完文档直接push到远程仓库，由Github Actions自动部署到博客网站上。由于本网站现阶段托管于github.io，因此我目前的需求是，推送博客文章的更改后，生成对应的静态网页，最后将静态网页内容自动推送到 username.github.io 这个仓库中。 必要的准备测">
+    <meta name="description" content="实验简介Lab0中完成了有序字节流的写入和读出，这个实验需要完成乱序字节流的重组、写入和读出。也就是说，Lab1实验手册中的这幅图，蓝色和绿色部分我们已经在Lab0中完成了，我们在Lab1中只需要完成红色部分的重组即可。  思路(这个思路有很大的性能优化空间)  使用map存储乱序字节流，key&#x3D;(起始下标，结束下标)，均从0开始，value&#x3D;(字符串)，pair&lt;int,int&gt;作为">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用Github Actions自动部署Hexo博客">
-<meta property="og:url" content="http://example.com/202106/Hexo-CI/index.html">
+<meta property="og:title" content="CS144-Lab1实验笔记">
+<meta property="og:url" content="http://example.com/202205/cs144-lab1/index.html">
 <meta property="og:site_name" content="Zelin&#39;s Blog">
-<meta property="og:description" content="介绍本文将介绍如何利用Github Actions功能自动部署博客。这样本地就不需要安装Node.js以及Hexo包，写完文档直接push到远程仓库，由Github Actions自动部署到博客网站上。由于本网站现阶段托管于github.io，因此我目前的需求是，推送博客文章的更改后，生成对应的静态网页，最后将静态网页内容自动推送到 username.github.io 这个仓库中。 必要的准备测">
+<meta property="og:description" content="实验简介Lab0中完成了有序字节流的写入和读出，这个实验需要完成乱序字节流的重组、写入和读出。也就是说，Lab1实验手册中的这幅图，蓝色和绿色部分我们已经在Lab0中完成了，我们在Lab1中只需要完成红色部分的重组即可。  思路(这个思路有很大的性能优化空间)  使用map存储乱序字节流，key&#x3D;(起始下标，结束下标)，均从0开始，value&#x3D;(字符串)，pair&lt;int,int&gt;作为">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/img/hexo-ci/action-result.png">
-<meta property="article:published_time" content="2021-06-21T04:34:37.000Z">
-<meta property="article:modified_time" content="2022-05-18T08:51:30.932Z">
+<meta property="og:image" content="http://example.com/img/cs144-pic/lab1-stream.png">
+<meta property="article:published_time" content="2022-05-18T08:39:38.000Z">
+<meta property="article:modified_time" content="2022-05-18T08:51:30.936Z">
 <meta property="article:author" content="John Doe">
-<meta property="article:tag" content="CI">
-<meta property="article:tag" content="Github">
-<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="CS144">
+<meta property="article:tag" content="TCP&#x2F;IP">
+<meta property="article:tag" content="Networking">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/img/hexo-ci/action-result.png">
+<meta name="twitter:image" content="http://example.com/img/cs144-pic/lab1-stream.png">
   
   
   
-  <title>使用Github Actions自动部署Hexo博客 - Zelin&#39;s Blog</title>
+  <title>CS144-Lab1实验笔记 - Zelin&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -200,7 +200,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="使用Github Actions自动部署Hexo博客"></span>
+            <span id="subtitle" data-typed-text="CS144-Lab1实验笔记"></span>
           
         </div>
 
@@ -211,8 +211,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2021-06-21 12:34" pubdate>
-          星期一, 六月 21日 2021, 12:34 下午
+        <time datetime="2022-05-18 16:39" pubdate>
+          星期三, 五月 18日 2022, 4:39 下午
         </time>
       </span>
     
@@ -224,7 +224,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          3.2k 字
+          4.6k 字
         
       </span>
     
@@ -272,78 +272,26 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">使用Github Actions自动部署Hexo博客</h1>
+            <h1 style="display: none">CS144-Lab1实验笔记</h1>
             
             <div class="markdown-body">
               
-              <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>本文将介绍如何利用Github Actions功能自动部署博客。这样本地就不需要安装<code>Node.js</code>以及<code>Hexo</code>包，写完文档直接push到远程仓库，由Github Actions自动部署到博客网站上。由于本网站现阶段托管于<code>github.io</code>，因此我目前的需求是，推送博客文章的更改后，生成对应的静态网页，最后将静态网页内容自动推送到 <code>username.github.io</code> 这个仓库中。</p>
-<h2 id="必要的准备"><a href="#必要的准备" class="headerlink" title="必要的准备"></a>必要的准备</h2><h3 id="测试常规Hexo部署流程"><a href="#测试常规Hexo部署流程" class="headerlink" title="测试常规Hexo部署流程"></a>测试常规Hexo部署流程</h3><p>参考<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/one-command-deployment">Hexo Doc</a>，</p>
+              <h2 id="实验简介"><a href="#实验简介" class="headerlink" title="实验简介"></a>实验简介</h2><p>Lab0中完成了有序字节流的写入和读出，这个实验需要完成乱序字节流的重组、写入和读出。也就是说，Lab1实验手册中的这幅图，蓝色和绿色部分我们已经在Lab0中完成了，我们在Lab1中只需要完成红色部分的重组即可。</p>
+<p><img src="/img/cs144-pic/lab1-stream.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>(这个思路有很大的性能优化空间)</p>
 <ol>
-<li><p>安装 hexo-deployer-git</p>
- <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ npm install hexo-deployer-git --save<br></code></pre></td></tr></table></figure>
-</li>
-<li><p>修改Hexo项目的根目录中的<code>_config.yml</code>文件</p>
- <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs yml"><span class="hljs-attr">deploy:</span><br><span class="hljs-attr">type:</span> <span class="hljs-string">git</span><br><span class="hljs-attr">repo:</span> <span class="hljs-string">&lt;git@github.com:username/username.github.io.git&gt;</span><br><span class="hljs-attr">branch:</span> <span class="hljs-string">master</span><br><span class="hljs-attr">name:</span> <span class="hljs-string">&lt;your-username?</span><br><span class="hljs-attr">email:</span> <span class="hljs-string">&lt;your-email&gt;</span><br></code></pre></td></tr></table></figure>
-<p> 使用<code>hexo clean &amp;&amp; hexo g -d</code> 命令测试常规Hexo部署流程是否正常。</p>
-</li>
+<li>使用map存储乱序字节流，<code>key=(起始下标，结束下标)</code>，均从0开始，<code>value=(字符串)</code>，<code>pair&lt;int,int&gt;</code>作为key的时候不需要自己写比较函数。</li>
+<li>每当有新字符串push进来后，在map中确定要插入的位置（应该插入到low_bound返回的之前一个），不断判断当前字符串是否能合并之前一个键值对或者之后的一个。</li>
+<li>如果当前map的第一个元素可以插入到有序字节流中，弹出完整的第一个元素，或者部分第一个元素。</li>
+<li>只有当“当前不存在乱序字节，且已经收到了对端发来的EOF标志”，有序字节流的<code>end_of_input</code>才有效。有一种情况是，收到了对端发来的EOF标志（收到了FIN包），但是中间仍有未收到的片段（空洞），这时候有序字节流不能结束。</li>
+<li>注意一些conner case，比如写入有序字节流的时候当前字符串不一定能全部写入。</li>
 </ol>
-<h3 id="创建两个仓库"><a href="#创建两个仓库" class="headerlink" title="创建两个仓库"></a>创建两个仓库</h3><p><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/one-command-deploymen">Hexo部署文档</a>中有过说明，最好将Hexo项目目录与静态博客网页分别使用两个Git仓库管理，因此我们准备两个仓库。</p>
-<ol>
-<li>创建<code>my-blog</code>仓库存放Hexo项目目录</li>
-<li>创建<code>username.github.io</code>仓库用来存放静态博客页面</li>
-</ol>
-<h3 id="配置密钥"><a href="#配置密钥" class="headerlink" title="配置密钥"></a>配置密钥</h3><ol>
-<li><p>生成一个RSA密钥专供GitHub Actions部署Hexo网页使用</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ ssh-keygen -f github-deploy-key<br></code></pre></td></tr></table></figure>
-<p>当前目录下会有<code>github-deploy-key</code>（私钥）和<code>github-deploy-key.pub</code>（公钥）两个文件。</p>
-</li>
-<li><p>配置部署密钥<br> 2.1 复制公钥，设置为<code>username.github.io</code>仓库的部署密钥（<code>Settings -&gt; Deploy keys -&gt; Add deploy key</code>）</p>
-<ul>
-<li>Title 填写 <code>HEXO_DEPLOY_PUB</code></li>
-<li>Key 填写复制的公钥</li>
-<li>勾选<code>Allow write access</code>选项</li>
-</ul>
-<p> 2.2 复制私钥，设置为<code>my-blog</code>项目的密文（<code>Settings -&gt; Secrets -&gt; Add a new secret</code>）</p>
-<ul>
-<li>Name填写<code>HEXO_DEPLOY_PRI</code></li>
-<li>Value填写复制的私钥</li>
-</ul>
-</li>
-</ol>
-<h2 id="编写Workflow"><a href="#编写Workflow" class="headerlink" title="编写Workflow"></a>编写Workflow</h2><p>Github使用workflow定义Github Actions的执行的环境与命令，作用类似于Gitlab中的<code>.gitlab-ci.yml</code></p>
-<ol>
-<li><p>在Hexo项目根目录下新建文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ mkdir -p .github/workflows<br>$ touch .github/workflows/deploy.yml<br></code></pre></td></tr></table></figure>
-</li>
-<li><p>编辑<code>deploy.yml</code></p>
- <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><code class="hljs yml"><span class="hljs-attr">name:</span> <span class="hljs-string">Hexo-CI</span><br><br><span class="hljs-attr">on:</span><br>    <span class="hljs-attr">push:</span><br>        <span class="hljs-attr">branches:</span><br>            <span class="hljs-bullet">-</span> <span class="hljs-string">master</span><br><br><span class="hljs-attr">env:</span><br><span class="hljs-attr">GIT_USER:</span> <span class="hljs-string">your-github-username</span><br><span class="hljs-attr">GIT_EMAIL:</span> <span class="hljs-string">your-github-email</span><br><span class="hljs-attr">THEME_NAME:</span> <span class="hljs-string">hexo-theme-fluid</span><br><span class="hljs-attr">DEPLOY_REPO:</span> <span class="hljs-string">username/username.github.io</span><br><span class="hljs-attr">DEPLOY_BRANCH:</span> <span class="hljs-string">master</span><br><br><span class="hljs-attr">jobs:</span><br><span class="hljs-attr">build:</span><br>    <span class="hljs-attr">name:</span> <span class="hljs-string">Build</span> <span class="hljs-string">on</span> <span class="hljs-string">node</span> <span class="hljs-string">$&#123;&#123;</span> <span class="hljs-string">matrix.node_version</span> <span class="hljs-string">&#125;&#125;</span> <span class="hljs-string">and</span> <span class="hljs-string">$&#123;&#123;</span> <span class="hljs-string">matrix.os</span> <span class="hljs-string">&#125;&#125;</span><br>    <span class="hljs-attr">runs-on:</span> <span class="hljs-string">ubuntu-latest</span><br>    <span class="hljs-attr">strategy:</span><br>    <span class="hljs-attr">matrix:</span><br>        <span class="hljs-attr">os:</span> [<span class="hljs-string">ubuntu-latest</span>]<br>        <span class="hljs-attr">node_version:</span> [<span class="hljs-number">14.</span><span class="hljs-string">x</span>]<br><br>    <span class="hljs-attr">steps:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Checkout</span><br>        <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/checkout@v2</span><br>        <span class="hljs-attr">with:</span><br>        <span class="hljs-attr">ref:</span> <span class="hljs-string">master</span><br><br><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Checkout</span> <span class="hljs-string">deploy</span> <span class="hljs-string">repo</span><br>        <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/checkout@v2</span><br>        <span class="hljs-attr">with:</span><br>        <span class="hljs-attr">repository:</span> <span class="hljs-string">$&#123;&#123;</span> <span class="hljs-string">env.DEPLOY_REPO</span> <span class="hljs-string">&#125;&#125;</span><br>        <span class="hljs-attr">ref:</span> <span class="hljs-string">$&#123;&#123;</span> <span class="hljs-string">env.DEPLOY_BRANCH</span> <span class="hljs-string">&#125;&#125;</span><br>        <span class="hljs-attr">path:</span> <span class="hljs-string">.deploy_git</span><br><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Use</span> <span class="hljs-string">Node.js</span> <span class="hljs-string">$&#123;&#123;</span> <span class="hljs-string">matrix.node_version</span> <span class="hljs-string">&#125;&#125;</span><br>        <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/setup-node@v1</span><br>        <span class="hljs-attr">with:</span><br>        <span class="hljs-attr">node-version:</span> <span class="hljs-string">$&#123;&#123;</span> <span class="hljs-string">matrix.node_version</span> <span class="hljs-string">&#125;&#125;</span><br><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Configuration</span> <span class="hljs-string">environment</span><br>        <span class="hljs-attr">env:</span><br>        <span class="hljs-attr">HEXO_DEPLOY_PRI:</span> <span class="hljs-string">$&#123;&#123;secrets.HEXO_DEPLOY_PRI&#125;&#125;</span><br>        <span class="hljs-attr">run:</span> <span class="hljs-string">|</span><br><span class="hljs-string">        sudo timedatectl set-timezone &quot;Asia/Shanghai&quot;</span><br><span class="hljs-string">        mkdir -p ~/.ssh/</span><br><span class="hljs-string">        echo &quot;$HEXO_DEPLOY_PRI&quot; &gt; ~/.ssh/id_rsa</span><br><span class="hljs-string">        chmod 600 ~/.ssh/id_rsa</span><br><span class="hljs-string">        ssh-keyscan github.com &gt;&gt; ~/.ssh/known_hosts</span><br><span class="hljs-string">        git config --global user.name $GIT_USER</span><br><span class="hljs-string">        git config --global user.email $GIT_EMAIL</span><br><span class="hljs-string"></span>        <br><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Install</span> <span class="hljs-string">dependencies</span> <span class="hljs-string">and</span> <span class="hljs-string">theme</span><br>        <span class="hljs-attr">run:</span> <span class="hljs-string">|</span><br><span class="hljs-string">        npm install</span><br><span class="hljs-string">        npm install --save $&#123;&#123; env.THEME_NAME &#125;&#125;</span><br><span class="hljs-string"></span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Deploy</span> <span class="hljs-string">hexo</span><br>        <span class="hljs-attr">run:</span> <span class="hljs-string">|</span><br>        <span class="hljs-string">npm</span> <span class="hljs-string">run</span> <span class="hljs-string">deploy</span><br></code></pre></td></tr></table></figure>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>类内新增变量</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// libsponge/stream_reassembler.hh  </span><br><span class="hljs-keyword">size_t</span> _unassembled_bytes&#123;<span class="hljs-number">0</span>&#125;;<br><span class="hljs-keyword">size_t</span> _first_unassembled_index&#123;<span class="hljs-number">0</span>&#125;;<br><span class="hljs-keyword">bool</span> _eof&#123;<span class="hljs-literal">false</span>&#125;;<br><span class="hljs-comment">// key-&gt; &lt;start_idx, end_idx&gt;, value -&gt; str_to_assembled</span><br><span class="hljs-keyword">using</span> <span class="hljs-keyword">recv_bytes_t</span> = pair&lt;pair&lt;<span class="hljs-keyword">size_t</span>, <span class="hljs-keyword">size_t</span>&gt;, std::string&gt;;<br>map&lt;pair&lt;<span class="hljs-keyword">size_t</span>, <span class="hljs-keyword">size_t</span>&gt;, std::string&gt; _str_to_assemble;<br><br>ByteStream _output;  <span class="hljs-comment">//!&lt; The reassembled in-order byte stream</span><br><span class="hljs-keyword">size_t</span> _capacity;    <span class="hljs-comment">//!&lt; The maximum number of bytes</span><br><br><span class="hljs-function"><span class="hljs-keyword">recv_bytes_t</span> <span class="hljs-title">merge_two_unassembled_strs</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">recv_bytes_t</span> &amp;a, <span class="hljs-keyword">const</span> <span class="hljs-keyword">recv_bytes_t</span> &amp;b)</span> <span class="hljs-keyword">const</span></span>;<br></code></pre></td></tr></table></figure>
+<p><code>push_string</code> 方法</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">//! \details This function accepts a substring (aka a segment) of bytes,</span><br><span class="hljs-comment">//! possibly out-of-order, from the logical stream, and assembles any newly</span><br><span class="hljs-comment">//! contiguous substrings and writes them into the output stream in order.</span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">StreamReassembler::push_substring</span><span class="hljs-params">(<span class="hljs-keyword">const</span> string &amp;data, <span class="hljs-keyword">const</span> <span class="hljs-keyword">size_t</span> index, <span class="hljs-keyword">const</span> <span class="hljs-keyword">bool</span> eof)</span> </span>&#123;<br>    <span class="hljs-keyword">size_t</span> cur_win_max_idx = _first_unassembled_index + _capacity - _output.<span class="hljs-built_in">buffer_size</span>();<br>    <span class="hljs-keyword">if</span> (index &gt;= cur_win_max_idx)<br>        <span class="hljs-keyword">return</span>;<br><br>    <span class="hljs-keyword">if</span> (eof) &#123;<br>        _eof = <span class="hljs-literal">true</span>;<br>    &#125;<br>    <span class="hljs-comment">// cut the chars which are out of window or have been assembled</span><br>    <span class="hljs-keyword">size_t</span> data_start_idx = <span class="hljs-built_in">max</span>(index, _first_unassembled_index);<br>    <span class="hljs-keyword">size_t</span> data_end_idx = <span class="hljs-built_in">min</span>(cur_win_max_idx, index + data.<span class="hljs-built_in">size</span>());<br>    <span class="hljs-keyword">if</span> (data_end_idx &gt;= data_start_idx) &#123;<br>        pair&lt;<span class="hljs-keyword">size_t</span>, <span class="hljs-keyword">size_t</span>&gt; cur_data_start_end_index = <span class="hljs-built_in">make_pair</span>(data_start_idx, data_end_idx);<br>        string cur_data = data.<span class="hljs-built_in">substr</span>(data_start_idx - index, data_end_idx - data_start_idx + <span class="hljs-number">1</span>);<br>        <span class="hljs-comment">// insert current data to str_to_assemble map</span><br>        <span class="hljs-keyword">recv_bytes_t</span> cur_recv_bytes = &#123;cur_data_start_end_index, cur_data&#125;;<br>        <span class="hljs-keyword">while</span> (!<span class="hljs-keyword">this</span>-&gt;<span class="hljs-built_in">empty</span>()) &#123;<br>            <span class="hljs-keyword">auto</span> iter = _str_to_assemble.<span class="hljs-built_in">lower_bound</span>(cur_data_start_end_index);<br>            <span class="hljs-keyword">bool</span> cur_data_could_merge_right =<br>                (iter != _str_to_assemble.<span class="hljs-built_in">end</span>()) &amp;&amp; (cur_recv_bytes.first.second &gt;= iter-&gt;first.first);<br>            <span class="hljs-keyword">if</span> (cur_data_could_merge_right) &#123;<br>                cur_recv_bytes = <span class="hljs-built_in">merge_two_unassembled_strs</span>(cur_recv_bytes, *iter);<br>                _unassembled_bytes -= iter-&gt;second.<span class="hljs-built_in">size</span>();<br>                _str_to_assemble.<span class="hljs-built_in">erase</span>(iter);<br>                iter = _str_to_assemble.<span class="hljs-built_in">lower_bound</span>(cur_data_start_end_index);<br>            &#125;<br><br>            <span class="hljs-keyword">bool</span> cur_data_could_merge_left =<br>                (iter != _str_to_assemble.<span class="hljs-built_in">begin</span>()) &amp;&amp; ((--iter)-&gt;first.second &gt;= cur_recv_bytes.first.first);<br>            <span class="hljs-keyword">if</span> (cur_data_could_merge_left) &#123;<br>                cur_recv_bytes = <span class="hljs-built_in">merge_two_unassembled_strs</span>(*iter, cur_recv_bytes);<br>                _unassembled_bytes -= iter-&gt;second.<span class="hljs-built_in">size</span>();<br>                _str_to_assemble.<span class="hljs-built_in">erase</span>(iter);<br>            &#125;<br>            <span class="hljs-keyword">if</span> (!cur_data_could_merge_right &amp;&amp; !cur_data_could_merge_left) &#123;<br>                <span class="hljs-keyword">break</span>;<br>            &#125;<br>        &#125;<br>        <span class="hljs-comment">// insert the unassembled str to map</span><br>        _str_to_assemble.<span class="hljs-built_in">insert</span>(cur_recv_bytes);<br>        _unassembled_bytes += cur_recv_bytes.second.<span class="hljs-built_in">size</span>();<br>    &#125;<br><br>    <span class="hljs-comment">// if the first chunk start index is smaller than _first_unassembled_index</span><br>    <span class="hljs-comment">// write the first chunk to output bytestream</span><br>    <span class="hljs-keyword">auto</span> iter = _str_to_assemble.<span class="hljs-built_in">begin</span>();<br>    <span class="hljs-keyword">if</span> (!_str_to_assemble.<span class="hljs-built_in">empty</span>() &amp;&amp; (iter-&gt;first.first &lt;= _first_unassembled_index)) &#123;<br>        <span class="hljs-keyword">auto</span> temp_map_head = *iter;<br>        _str_to_assemble.<span class="hljs-built_in">erase</span>(iter);<br>        <span class="hljs-keyword">size_t</span> written_len = _output.<span class="hljs-built_in">write</span>(temp_map_head.second);<br>        _unassembled_bytes -= written_len;<br>        <span class="hljs-keyword">if</span> (written_len == temp_map_head.second.<span class="hljs-built_in">size</span>()) &#123;<br>            <span class="hljs-comment">// The first chunk was all written to the output stream</span><br>            _first_unassembled_index = temp_map_head.first.first + temp_map_head.second.<span class="hljs-built_in">size</span>();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-comment">// Part of first chunk was written to the output stream</span><br>            <span class="hljs-keyword">size_t</span> new_data_start_index = temp_map_head.first.first + written_len;<br>            _str_to_assemble.<span class="hljs-built_in">insert</span>(<br>                &#123;&#123;new_data_start_index, temp_map_head.first.second&#125;, temp_map_head.second.<span class="hljs-built_in">substr</span>(written_len)&#125;);<br>            _first_unassembled_index = new_data_start_index;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">empty</span>() &amp;&amp; _eof) &#123;<br>        _output.<span class="hljs-built_in">end_input</span>();<br>    &#125;<br>&#125;<br><br><span class="hljs-comment">//! \details This function merge two recv_bytes_type pairs, the start index of a is always smaller than b.</span><br><span class="hljs-function">StreamReassembler::<span class="hljs-keyword">recv_bytes_t</span> <span class="hljs-title">StreamReassembler::merge_two_unassembled_strs</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">    <span class="hljs-keyword">const</span> StreamReassembler::<span class="hljs-keyword">recv_bytes_t</span> &amp;a,</span></span><br><span class="hljs-params"><span class="hljs-function">    <span class="hljs-keyword">const</span> StreamReassembler::<span class="hljs-keyword">recv_bytes_t</span> &amp;b)</span> <span class="hljs-keyword">const</span> </span>&#123;<br>    <span class="hljs-keyword">recv_bytes_t</span> res;<br>    res.first.first = a.first.first;<br>    <span class="hljs-comment">// choose the bigger one for the end index of merged string.</span><br>    <span class="hljs-keyword">if</span> (a.first.second &gt; b.first.second) &#123;<br>        res.first.second = a.first.second;<br>        res.second = a.second;<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        res.first.second = b.first.second;<br>        res.second = a.second.<span class="hljs-built_in">substr</span>(<span class="hljs-number">0</span>, b.first.first - a.first.first) + b.second;<br>    &#125;<br>    <span class="hljs-keyword">return</span> res;<br>&#125;<br></code></pre></td></tr></table></figure>
 
-</li>
-<li><p>整理Hexo目录，推送更改到<code>my-blog</code>仓库<br><code>.gitignore</code>中应该包含对 <code>public/</code>, <code>.deploy_git/</code> 等由于Hexo生成静态网页的文件夹的排除</p>
-</li>
-<li><p>查看部署结果<br>查看<code>my-blog</code>仓库中Actions，可以看到本次推送触发Actions的执行结果。<br><img src="/img/hexo-ci/action-result.png" srcset="/img/loading.gif" lazyload></p>
-</li>
-</ol>
-<p><strong>模板参数说明</strong></p>
-<ul>
-<li><code>name</code> 为此 Action 的名字</li>
-<li><code>on</code> 触发条件，目前含义为，当master分支收到推送后，触发Actions</li>
-<li><code>env</code> 为一些环境变量，默认变量参考<a target="_blank" rel="noopener" href="https://docs.github.com/cn/actions/reference/environment-variables">环境变量 on Github Docs</a></li>
-<li><code>env.GIT_USER</code> 为 Hexo 编译后使用此 git 用户部署到仓库</li>
-<li><code>env.GIT_EMAIL</code> 为 Hexo 编译后使用此 git 邮箱部署到仓库</li>
-<li><code>env.THEME_NAME</code> 为您的 Hexo 所使用的主题的仓库，这里为 hexo-theme-fluid</li>
-<li><code>env.DEPLOY_REPO</code> 为 Hexo 编译后要部署的仓库，写托管静态网页的仓库</li>
-<li><code>env.DEPLOY_BRANCH</code> 为 Hexo 编译后要部署到的分支，如果是非master分支，参考<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/one-command-deployment#Git">Hexo Doc</a> 和<code>Github</code>仓库中<code>settings-&gt;pages-&gt;branch</code>处进行更改</li>
-<li><code>jobs</code> 为此 Action 下的任务列表，具体语法参考<a target="_blank" rel="noopener" href="https://docs.github.com/cn/actions/reference/workflow-syntax-for-github-actions">Job Vars on Github Docs</a></li>
-<li><code>jobs.&#123;job&#125;.name</code> 任务名称</li>
-<li><code>jobs.&#123;job&#125;.runs-on</code> 任务所需容器，可选值：ubuntu-latest、windows-latest、macos-latest。</li>
-<li><code>jobs.&#123;job&#125;.steps.$.name</code> 步骤名，编译时会会以 LOG 形式输出。</li>
-</ul>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a target="_blank" rel="noopener" href="https://sanonz.github.io/2020/deploy-a-hexo-blog-from-github-actions/">利用 Github Actions 自动部署 Hexo 博客</a></li>
-<li><a target="_blank" rel="noopener" href="https://printempw.github.io/use-github-actions-to-deploy-hexo-blog/">使用 GitHub Actions 自动部署 Hexo 博客</a></li>
-<li><a target="_blank" rel="noopener" href="https://docs.github.com/cn/actions/reference/workflow-syntax-for-github-actions">Github Actions Reference</a></li>
-</ol>
+
 
               
             </div>
@@ -355,11 +303,11 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/CI/">#CI</a>
+        <a href="/tags/CS144/">#CS144</a>
       
-        <a href="/tags/Github/">#Github</a>
+        <a href="/tags/TCP-IP/">#TCP/IP</a>
       
-        <a href="/tags/Hexo/">#Hexo</a>
+        <a href="/tags/Networking/">#Networking</a>
       
     </div>
   
@@ -371,8 +319,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>使用Github Actions自动部署Hexo博客</div>
-      <div>http://example.com/202106/Hexo-CI/</div>
+      <div>CS144-Lab1实验笔记</div>
+      <div>http://example.com/202205/cs144-lab1/</div>
     </div>
     <div class="license-meta">
       
@@ -384,7 +332,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2021年6月21日</div>
+          <div>2022年5月18日</div>
         </div>
       
       
@@ -414,15 +362,21 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/202106/6-s081-lab0/" title="[MIT-6.S081/Fall2020] 实验笔记零 Lab0: Preparation">
+                      <a href="/202205/cs144-lab2/" title="CS144-Lab2实验笔记">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">[MIT-6.S081/Fall2020] 实验笔记零 Lab0: Preparation</span>
+                        <span class="hidden-mobile">CS144-Lab2实验笔记</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
                   </article>
                   <article class="post-next col-6">
                     
+                    
+                      <a href="/202205/cs144-lab0/" title="CS144-实验环境搭建和Lab0">
+                        <span class="hidden-mobile">CS144-实验环境搭建和Lab0</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </article>
                 </div>
@@ -440,7 +394,7 @@
         var options = Object.assign(
           {"clientID":"92499b3e9ca46e054919","clientSecret":"eef0bc1146a28cdb3d17fd4cf149158cab4ffa2f","repo":"gwzlchn.github.io","owner":"Gwzlchn","admin":["Gwzlchn"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
           {
-            id: '3db77f656fb6832a0c32f83ccf2a8b22'
+            id: '2abdb4386424b6535bf0ff94c551f68b'
           }
         )
         var gitalk = new Gitalk(options);

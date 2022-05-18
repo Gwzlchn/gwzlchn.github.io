@@ -1,0 +1,803 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=light>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#080000">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="实验简介这个实验主要完成TCP Endpoint的功能，一个TCP端点包含一个TCPSender，和一个TCPReceiver。进行TCP连接的时候，通常是一个TCP端点A向另一个TCP端点B发送“连接建立”请求，经过三次握手后TCP连接建立。之后两个端点间可以相互传送数据。每当一端要发送的字节流到达EOF的时候，向对端发送一个“连接关闭”请求，最后当两个端点均已经发送连接关闭的请求，并且都接到了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CS144-Lab4实验笔记">
+<meta property="og:url" content="http://example.com/202205/cs144-lab4/index.html">
+<meta property="og:site_name" content="Zelin&#39;s Blog">
+<meta property="og:description" content="实验简介这个实验主要完成TCP Endpoint的功能，一个TCP端点包含一个TCPSender，和一个TCPReceiver。进行TCP连接的时候，通常是一个TCP端点A向另一个TCP端点B发送“连接建立”请求，经过三次握手后TCP连接建立。之后两个端点间可以相互传送数据。每当一端要发送的字节流到达EOF的时候，向对端发送一个“连接关闭”请求，最后当两个端点均已经发送连接关闭的请求，并且都接到了">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/cs144-pic/TCP-FSM.png">
+<meta property="og:image" content="http://example.com/img/cs144-pic/TCP-SYN.png">
+<meta property="og:image" content="http://example.com/img/cs144-pic/TCP-FIN.png">
+<meta property="article:published_time" content="2022-05-18T08:39:45.000Z">
+<meta property="article:modified_time" content="2022-05-18T08:51:30.936Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="CS144">
+<meta property="article:tag" content="TCP&#x2F;IP">
+<meta property="article:tag" content="Networking">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/cs144-pic/TCP-FSM.png">
+  
+  
+  
+  <title>CS144-Lab4实验笔记 - Zelin&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.0","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vyfV0Jz8OincT54vffevrlx0-gzGzoHsz","app_key":"abuQhfiaX9zRJg6PYac65qfa","server_url":"https://vyfv0jz8.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 50vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Zelin&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/banner.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="CS144-Lab4实验笔记"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-05-18 16:39" pubdate>
+          星期三, 五月 18日 2022, 4:39 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          7.8k 字
+        
+      </span>
+    
+
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">CS144-Lab4实验笔记</h1>
+            
+            <div class="markdown-body">
+              
+              <h2 id="实验简介"><a href="#实验简介" class="headerlink" title="实验简介"></a>实验简介</h2><p>这个实验主要完成TCP Endpoint的功能，一个TCP端点包含一个TCPSender，和一个TCPReceiver。进行TCP连接的时候，通常是一个TCP端点A向另一个TCP端点B发送“连接建立”请求，经过三次握手后TCP连接建立。之后两个端点间可以相互传送数据。每当一端要发送的字节流到达EOF的时候，向对端发送一个“连接关闭”请求，最后当两个端点均已经发送连接关闭的请求，并且都接到了这个请求的响应后，TCP连接就算关闭了。</p>
+<h3 id="TCP状态机"><a href="#TCP状态机" class="headerlink" title="TCP状态机"></a>TCP状态机</h3><p>简介中简单描述了下TCP通信的流程，但具体的TCP状态转移需要考虑一些边界情况，可参考下图，<br><img src="/img/cs144-pic/TCP-FSM.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="TCP连接的建立-非同时握手"><a href="#TCP连接的建立-非同时握手" class="headerlink" title="TCP连接的建立(非同时握手)"></a>TCP连接的建立(非同时握手)</h3><p><img src="/img/cs144-pic/TCP-SYN.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="TCP连接的关闭-非同时关闭"><a href="#TCP连接的关闭-非同时关闭" class="headerlink" title="TCP连接的关闭(非同时关闭)"></a>TCP连接的关闭(非同时关闭)</h3><p><img src="/img/cs144-pic/TCP-FIN.png" srcset="/img/loading.gif" lazyload></p>
+<blockquote>
+<p>以上图片均来源于 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/The_Linux_Programming_Interface">Linux&#x2F;UNIX系统编程手册，人民邮电出版社</a></p>
+</blockquote>
+<h2 id="实验思路"><a href="#实验思路" class="headerlink" title="实验思路"></a>实验思路</h2><h3 id="接受报文"><a href="#接受报文" class="headerlink" title="接受报文"></a>接受报文</h3><p>TCP连接从网络上接受报文，并调用<code>segment_received</code>函数。当调用发生时，函数应该如下工作：</p>
+<ol>
+<li>如果收到了 <code>RST</code> 报文，则关闭这个连接，并将接受字节流和发送字节流均设为ERROR状态。否则：</li>
+<li>将报文交给<code>TCPReceiver</code>来处理本报文的包头中的<code>seqno/SYN/FIN</code>和数据段</li>
+<li>如果收到了<code>ACK</code>报文（也就是除了第一个SYN报文外的所有正常报文），通知<code>TCPSender</code>更新<code>ackno</code>和<code>win_size</code></li>
+<li>如果当前报文包含数据或者SYN&#x2F;FIN标志位有效，则至少响应一个报文，以通知对端本端最新的<code>ackno</code>和<code>win_size</code>。</li>
+<li>如果收到了Keepalive报文，见下。</li>
+</ol>
+<h3 id="发送报文"><a href="#发送报文" class="headerlink" title="发送报文"></a>发送报文</h3><ol>
+<li>每当<code>TCPSender</code>将一个TCP报文添加到它的待发送队列中时，TCP连接需要从中取出并将其发送。</li>
+<li>在发送当前数据包之前，TCPConnection 会根据<code>TCPReceiver</code>的<code>ackno</code> 和 <code>win_size</code>，将其放置进待发送 TCPSegment 中，并设置报文的 <code>ACK</code>。</li>
+</ol>
+<h3 id="TCP-KeepAlives"><a href="#TCP-KeepAlives" class="headerlink" title="TCP KeepAlives"></a>TCP KeepAlives</h3><p>KeepAlive是一种周期性检查另一端主机的该TCP连接是否存活的机制。在<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc1122#page-101">RFC 1122</a> 中被描述。</p>
+<p>KeepAlive报文是一个空的报文段（或者仅包含一个任意字节）。它的序列号等于对端已经ACK过的字节减1: <code>SEG.SEQ = SND.NXT-1</code>，这个序列号对应的数据显然被对方成功接受了，所以不会对对端的接受数据造成影响。如果接受方能正确处理这个KeepAlive报文，则同样返回一个空的<code>ACK</code>报文即可，表明当前TCP连接仍然存活。</p>
+<p>KeepAlive报文和其响应报文都不会包含任何新的有效数据，丢失的时候也不会重传。RFC1122同样指出，仅凭一个没有收到响应的KeepAlive报文不能判断对端的TCP连接已经停止工作，所以失败时需要多次发送Keepalive报文。</p>
+<p>讲义中给出了处理对端KeepAlive报文的伪算法</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cpp">  <span class="hljs-keyword">if</span> (_receiver.<span class="hljs-built_in">ackno</span>().<span class="hljs-built_in">has_value</span>() <span class="hljs-built_in"><span class="hljs-keyword">and</span></span> (seg.<span class="hljs-built_in">length_in_sequence_space</span>() == <span class="hljs-number">0</span>)<br>         <span class="hljs-keyword">and</span> seg.<span class="hljs-built_in">header</span>().seqno == _receiver.<span class="hljs-built_in">ackno</span>().<span class="hljs-built_in">value</span>() - <span class="hljs-number">1</span>) &#123;<br>         _sender.<span class="hljs-built_in">send_empty_segment</span>();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="接受RST报文"><a href="#接受RST报文" class="headerlink" title="接受RST报文"></a>接受RST报文</h3><p>有几种情况本端会收到对端的RST报文</p>
+<ul>
+<li>本端向对端没有打开的端口发送了SYN报文，会收到RST报文。</li>
+<li>TCP连接建立后，对端突然崩溃，本端再发送正常报文时，会收到RST报文。</li>
+<li>TIME-WAIT状态下收到了之前的数据报文，本端正常回复<code>ACK</code>，但对端已经关闭了这个连接，所以会回复一个RST报文（这种情况会导致本端TIME-WAIT状态提前结束，称为<a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc1337.html">TIME-WAIT Assassination，在RFC1337中有所描述</a>）</li>
+<li>对端主动发出RST报文</li>
+</ul>
+<p>本端收到了RST报文后，不需要任何回复，直接关闭这条TCP连接，并将发送&#x2F;接受的数据流关闭。（实验中是将 <code>ByteStream inbound/outbound</code>设为 <code>ERROR</code>状态）</p>
+<h3 id="发送RST报文"><a href="#发送RST报文" class="headerlink" title="发送RST报文"></a>发送RST报文</h3><p>上一节已经说明了什么情况下会发送RST报文，但还有以下情况使得一端会主动发出RST报文</p>
+<ul>
+<li>本端socket程序收到了程序终止的信号，如<code>SIGINT</code>，直接发送<code>RST</code>终止连接。</li>
+<li>实验讲义中说明，如果当前重传次数超过上限，则需要<code>RST</code>报文终止连接。</li>
+</ul>
+<p><code>RST</code>报文的<code>seqno</code>部分必须是正确的（正确指的是在对端的接受窗口内，亦即<code>(RCV.NXT &lt;= SEG.SEQ &lt; RCV.NXT+RCV.WND)</code>，<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc5961#section-3">这样可以防止TCP重置攻击，见RFC5961</a></p>
+<h2 id="调试心得"><a href="#调试心得" class="headerlink" title="调试心得"></a>调试心得</h2><ol>
+<li><p>TCPConnection起始状态是<code>LISTEN</code>，<code>active</code>变量应该为<code>true</code></p>
+<p>测试函数里面，FSM什么都不执行就是LISTEN态。</p>
+ <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// tests/tcp_expectation.hh</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Listen</span> :</span> <span class="hljs-keyword">public</span> TCPAction &#123;<br>    <span class="hljs-function">std::string <span class="hljs-title">description</span><span class="hljs-params">()</span> <span class="hljs-keyword">const</span> </span>&#123; <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;listen&quot;</span>; &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">execute</span><span class="hljs-params">(TCPTestHarness &amp;)</span> <span class="hljs-keyword">const</span> </span>&#123;&#125;<br>&#125;;<br><br></code></pre></td></tr></table></figure>
+<p> 我最开始的实现时候<code>_active</code>设为false，<code>t_ack_rst</code> 这个测试包含一个LISTEN态的比较，死活过不去。</p>
+</li>
+<li><p>同时打开</p>
+<p>按照RFC 793的描述，同时打开的情况下，双方第二次握手均应该发送<code>SYN+ACK</code>包，但是测试逻辑这里却希望仅希望收到<code>ACK</code>包</p>
+<figure class="highlight bnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs bnf">    TCP A                                            TCP B<br><br>1.  CLOSED                                           CLOSED<br><br>2.  SYN-SENT     --&gt; <span class="hljs-attribute">&lt;SEQ=100&gt;</span><span class="hljs-attribute">&lt;CTL=SYN&gt;</span>              ...<br><br>3.  SYN-RECEIVED <span class="hljs-attribute">&lt;-- &lt;SEQ=300&gt;</span><span class="hljs-attribute">&lt;CTL=SYN&gt;</span>              <span class="hljs-attribute">&lt;-- SYN-SENT</span><br><span class="hljs-attribute"></span><br><span class="hljs-attribute">4.               ... &lt;SEQ=100&gt;</span><span class="hljs-attribute">&lt;CTL=SYN&gt;</span>              --&gt; SYN-RECEIVED<br><br>5.  SYN-RECEIVED --&gt; <span class="hljs-attribute">&lt;SEQ=100&gt;</span><span class="hljs-attribute">&lt;ACK=301&gt;</span><span class="hljs-attribute">&lt;CTL=SYN,ACK&gt;</span> ...<br><br>6.  ESTABLISHED  <span class="hljs-attribute">&lt;-- &lt;SEQ=300&gt;</span><span class="hljs-attribute">&lt;ACK=101&gt;</span><span class="hljs-attribute">&lt;CTL=SYN,ACK&gt;</span> <span class="hljs-attribute">&lt;-- SYN-RECEIVED</span><br><span class="hljs-attribute"></span><br><span class="hljs-attribute">7.               ... &lt;SEQ=101&gt;</span><span class="hljs-attribute">&lt;ACK=301&gt;</span><span class="hljs-attribute">&lt;CTL=ACK&gt;</span>     --&gt; ESTABLISHED<br><br>              Simultaneous Connection Synchronization<br><br>                            Figure 8.<br></code></pre></td></tr></table></figure>
+
+<p>测试函数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function">TCPTestHarness <span class="hljs-title">test_2</span><span class="hljs-params">(cfg)</span></span>;<br><br>test_2.<span class="hljs-built_in">execute</span>(Connect&#123;&#125;);<br>test_2.<span class="hljs-built_in">execute</span>(<span class="hljs-built_in">Tick</span>(<span class="hljs-number">1</span>));<br><br>TCPSegment seg = test_2.<span class="hljs-built_in">expect_seg</span>(ExpectOneSegment&#123;&#125;.<span class="hljs-built_in">with_syn</span>(<span class="hljs-literal">true</span>).<span class="hljs-built_in">with_ack</span>(<span class="hljs-literal">false</span>),<br>                                    <span class="hljs-string">&quot;test 2 failed: could not parse SYN segment or invalid flags&quot;</span>);<br><span class="hljs-keyword">auto</span> &amp;seg_hdr = seg.<span class="hljs-built_in">header</span>();<br><br>test_2.<span class="hljs-built_in">execute</span>(ExpectState&#123;State::SYN_SENT&#125;);<br><br><span class="hljs-comment">// send SYN (no ACK yet)</span><br><span class="hljs-function"><span class="hljs-keyword">const</span> WrappingInt32 <span class="hljs-title">isn</span><span class="hljs-params">(rd())</span></span>;<br>test_2.<span class="hljs-built_in">send_syn</span>(isn);<br>test_2.<span class="hljs-built_in">execute</span>(<span class="hljs-built_in">Tick</span>(<span class="hljs-number">1</span>));<br><br>test_2.<span class="hljs-built_in">expect_seg</span>(ExpectOneSegment&#123;&#125;.<span class="hljs-built_in">with_syn</span>(<span class="hljs-literal">false</span>).<span class="hljs-built_in">with_ack</span>(<span class="hljs-literal">true</span>).<span class="hljs-built_in">with_ackno</span>(isn + <span class="hljs-number">1</span>),<br>                  <span class="hljs-string">&quot;test 2 failed: bad ACK for SYN&quot;</span>);<br><br>test_2.<span class="hljs-built_in">execute</span>(ExpectState&#123;State::SYN_RCVD&#125;);<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>调试tun144&#x2F;145</p>
+</li>
+</ol>
+<p>本地tun144&#x2F;tun145两张网卡无法通信。tun145发的包tun144收不到</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ ip a<br>...<br>49: tun144: &lt;NO-CARRIER,POINTOPOINT,MULTICAST,NOARP,UP&gt; mtu 1500 qdisc fq_codel state DOWN group default qlen 500<br>    link/none <br>    inet 169.254.144.1/24 scope global tun144<br>       valid_lft forever preferred_lft forever<br>    inet6 fe80::40ad:1e69:28e2:988c/64 scope link stable-privacy <br>       valid_lft forever preferred_lft forever<br>50: tun145: &lt;NO-CARRIER,POINTOPOINT,MULTICAST,NOARP,UP&gt; mtu 1500 qdisc fq_codel state DOWN group default qlen 500<br>    link/none <br>    inet 169.254.145.1/24 scope global tun145<br>       valid_lft forever preferred_lft forever<br>    inet6 fe80::8e6c:7fed:e456:8f35/64 scope link stable-privacy <br>       valid_lft forever preferred_lft forever<br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ ip r<br>default via 10.19.0.254 dev eno1 proto static metric 100 <br>default via 10.30.0.254 dev eno3 proto static metric 20102 <br>10.19.0.0/24 dev eno1 proto kernel scope link src 10.19.0.36 metric 100 <br>10.30.0.0/19 dev eno3 proto kernel scope link src 10.30.19.36 metric 102 <br>169.254.0.0/16 dev tun144 scope link metric 1000 linkdown <br>169.254.144.0/24 dev tun144 scope link linkdown rto_min lock 10ms <br>169.254.145.0/24 dev tun145 scope link linkdown rto_min lock 10ms <br>172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 <br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ sudo iptables -L -n -t nat   <br>Chain PREROUTING (policy ACCEPT)<br>target     prot opt <span class="hljs-built_in">source</span>               destination         <br>DOCKER     all  --  0.0.0.0/0            0.0.0.0/0            ADDRTYPE match dst-type LOCAL<br>CONNMARK   all  --  169.254.144.0/24     0.0.0.0/0            CONNMARK <span class="hljs-built_in">set</span> 0x90<br>CONNMARK   all  --  169.254.145.0/24     0.0.0.0/0            CONNMARK <span class="hljs-built_in">set</span> 0x91<br><br>Chain INPUT (policy ACCEPT)<br>target     prot opt <span class="hljs-built_in">source</span>               destination         <br><br>Chain OUTPUT (policy ACCEPT)<br>target     prot opt <span class="hljs-built_in">source</span>               destination         <br>DOCKER     all  --  0.0.0.0/0           !127.0.0.0/8          ADDRTYPE match dst-type LOCAL<br><br>Chain POSTROUTING (policy ACCEPT)<br>target     prot opt <span class="hljs-built_in">source</span>               destination         <br>MASQUERADE  all  --  172.17.0.0/16        0.0.0.0/0           <br>MASQUERADE  tcp  --  172.17.0.2           172.17.0.2           tcp dpt:9001<br>MASQUERADE  tcp  --  172.17.0.2           172.17.0.2           tcp dpt:9000<br>MASQUERADE  all  --  0.0.0.0/0            0.0.0.0/0            connmark match  0x90<br>MASQUERADE  all  --  0.0.0.0/0            0.0.0.0/0            connmark match  0x91<br><br>Chain DOCKER (2 references)<br>target     prot opt <span class="hljs-built_in">source</span>               destination         <br>RETURN     all  --  0.0.0.0/0            0.0.0.0/0           <br>DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:9001 to:172.17.0.2:9001<br>DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:9000 to:172.17.0.2:9000<br></code></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>Debug打印</li>
+</ol>
+<p>可以加上TCPConnection状态打印函数，为了避免影响性能，存在DEBUG宏的时候编译，或者传给gcc<code>-DDEBUG</code>参数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs cpp">    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TCPConnectionDebugger</span> &#123;</span><br>      <span class="hljs-keyword">private</span>:<br>        <span class="hljs-keyword">bool</span> open_debugger&#123;<span class="hljs-literal">true</span>&#125;;<br><br>      <span class="hljs-keyword">public</span>:<br>        <span class="hljs-built_in">TCPConnectionDebugger</span>() : <span class="hljs-built_in">open_debugger</span>(<span class="hljs-literal">true</span>) &#123;&#125;<br>        ~<span class="hljs-built_in">TCPConnectionDebugger</span>() &#123;&#125;<br><br>        <span class="hljs-function">std::string <span class="hljs-title">color_1</span><span class="hljs-params">(<span class="hljs-keyword">const</span> std::string &amp;data)</span> </span>&#123; <span class="hljs-keyword">return</span> data; &#125;<br><br>        <span class="hljs-function">std::string <span class="hljs-title">color_2</span><span class="hljs-params">(<span class="hljs-keyword">const</span> std::string &amp;data)</span> </span>&#123; <span class="hljs-keyword">return</span> data; &#125;<br><br>        <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">print_segment</span><span class="hljs-params">(<span class="hljs-keyword">const</span> TCPConnection &amp;that,</span></span><br><span class="hljs-params"><span class="hljs-function">                           <span class="hljs-keyword">const</span> TCPSegment &amp;seg,</span></span><br><span class="hljs-params"><span class="hljs-function">                           <span class="hljs-keyword">const</span> std::string &amp;desription,</span></span><br><span class="hljs-params"><span class="hljs-function">                           <span class="hljs-keyword">bool</span> check = <span class="hljs-literal">true</span>)</span> </span>&#123;<br>            <span class="hljs-built_in">DUMMY_CODE</span>(that, seg, desription, check);<br><span class="hljs-meta">#<span class="hljs-meta-keyword">ifdef</span> DEBUG</span><br>            std::cerr &lt;&lt; <span class="hljs-string">&quot;\n&quot;</span> &lt;&lt; <span class="hljs-built_in">color_1</span>(desription) &lt;&lt; <span class="hljs-string">&quot;\n&quot;</span>;<br>            std::cerr &lt;&lt; (<span class="hljs-built_in">color_2</span>(<span class="hljs-string">&quot;Flag&quot;</span>) + <span class="hljs-string">&quot; : &quot;</span>) &lt;&lt; (seg.<span class="hljs-built_in">header</span>().syn ? <span class="hljs-string">&quot;S&quot;</span> : <span class="hljs-string">&quot;&quot;</span>) &lt;&lt; (seg.<span class="hljs-built_in">header</span>().fin ? <span class="hljs-string">&quot;F&quot;</span> : <span class="hljs-string">&quot;&quot;</span>)<br>                      &lt;&lt; (seg.<span class="hljs-built_in">header</span>().ack ? <span class="hljs-string">&quot;A&quot;</span> : <span class="hljs-string">&quot;&quot;</span>) &lt;&lt; (seg.<span class="hljs-built_in">header</span>().rst ? <span class="hljs-string">&quot;R&quot;</span> : <span class="hljs-string">&quot;&quot;</span>) &lt;&lt; <span class="hljs-string">&quot;\n&quot;</span><br>                      &lt;&lt; (<span class="hljs-built_in">color_2</span>(<span class="hljs-string">&quot;Sequnce Number&quot;</span>) + <span class="hljs-string">&quot; : &quot;</span>) &lt;&lt; (seg.<span class="hljs-built_in">header</span>().seqno.<span class="hljs-built_in">raw_value</span>()) &lt;&lt; <span class="hljs-string">&quot;\n&quot;</span><br>                      &lt;&lt; (<span class="hljs-built_in">color_2</span>(<span class="hljs-string">&quot;Acknowledgement Number&quot;</span>) + <span class="hljs-string">&quot; : &quot;</span>) &lt;&lt; (seg.<span class="hljs-built_in">header</span>().ackno) &lt;&lt; <span class="hljs-string">&quot;\n&quot;</span><br>                      &lt;&lt; (<span class="hljs-built_in">color_2</span>(<span class="hljs-string">&quot;Window Size&quot;</span>) + <span class="hljs-string">&quot; : &quot;</span>) &lt;&lt; (seg.<span class="hljs-built_in">header</span>().win) &lt;&lt; <span class="hljs-string">&quot;\n&quot;</span><br>                      &lt;&lt; (<span class="hljs-built_in">color_2</span>(<span class="hljs-string">&quot;Payload&quot;</span>) + <span class="hljs-string">&quot; : &quot;</span>) &lt;&lt; (seg.<span class="hljs-built_in">payload</span>().<span class="hljs-built_in">size</span>() ? seg.<span class="hljs-built_in">payload</span>().<span class="hljs-built_in">str</span>() : <span class="hljs-string">&quot;empty string&quot;</span>)<br>                      &lt;&lt; <span class="hljs-string">&quot;\n&quot;</span><br>                      &lt;&lt; (<span class="hljs-built_in">color_2</span>(<span class="hljs-string">&quot;Payload Size&quot;</span>) + <span class="hljs-string">&quot; : &quot;</span>) &lt;&lt; (seg.<span class="hljs-built_in">payload</span>().<span class="hljs-built_in">size</span>()) &lt;&lt; <span class="hljs-string">&quot;\n&quot;</span><br>                      &lt;&lt; (<span class="hljs-built_in">color_2</span>(<span class="hljs-string">&quot;Sequnce Space&quot;</span>) + <span class="hljs-string">&quot; : &quot;</span>) &lt;&lt; (seg.<span class="hljs-built_in">length_in_sequence_space</span>()) &lt;&lt; <span class="hljs-string">&quot;\n&quot;</span><br>                      &lt;&lt; (<span class="hljs-built_in">color_2</span>(<span class="hljs-string">&quot;ackno of sender&quot;</span>) + <span class="hljs-string">&quot; : &quot;</span>) &lt;&lt; (that._sender.<span class="hljs-built_in">next_seqno_absolute</span>()) &lt;&lt; <span class="hljs-string">&quot;\n&quot;</span><br>                      &lt;&lt; (<span class="hljs-built_in">color_2</span>(<span class="hljs-string">&quot;next seqno absolute of sender&quot;</span>) + <span class="hljs-string">&quot; : &quot;</span>) &lt;&lt; (that._sender.<span class="hljs-built_in">next_seqno_absolute</span>())<br>                      &lt;&lt; <span class="hljs-string">&quot;\n&quot;</span>;<br>            std::cerr &lt;&lt; (<span class="hljs-built_in">color_2</span>(<span class="hljs-string">&quot;Active: &quot;</span>) + ((that._active) ? <span class="hljs-string">&quot;Y &quot;</span> : <span class="hljs-string">&quot;N&quot;</span>))<br>                      &lt;&lt; (<span class="hljs-built_in">color_2</span>(<span class="hljs-string">&quot;  TIME_WAIT: &quot;</span>) + ((that._linger_after_streams_finish) ? <span class="hljs-string">&quot;Y\n&quot;</span> : <span class="hljs-string">&quot;N\n&quot;</span>));<br>            std::cerr &lt;&lt; (<span class="hljs-built_in">color_2</span>(<span class="hljs-string">&quot;Sender State: &quot;</span>)) &lt;&lt; that.<span class="hljs-built_in">state</span>().<span class="hljs-built_in">name</span>() &lt;&lt; std::endl;<br><span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span><br>        &#125;<br>    &#125;;<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="性能调优"><a href="#性能调优" class="headerlink" title="性能调优"></a>性能调优</h2><ol>
+<li>第一次实现的性能<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ ./apps/tcp_benchmark<br>CPU-limited throughput                : 2.65 Gbit/s<br>CPU-limited throughput with reordering: 1.45 Gbit/s<br></code></pre></td></tr></table></figure></li>
+</ol>
+
+              
+            </div>
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CS144/">#CS144</a>
+      
+        <a href="/tags/TCP-IP/">#TCP/IP</a>
+      
+        <a href="/tags/Networking/">#Networking</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>CS144-Lab4实验笔记</div>
+      <div>http://example.com/202205/cs144-lab4/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年5月18日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/202205/cs144-lab3/" title="CS144-Lab3实验笔记">
+                        <span class="hidden-mobile">CS144-Lab3实验笔记</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.7.2/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"92499b3e9ca46e054919","clientSecret":"eef0bc1146a28cdb3d17fd4cf149158cab4ffa2f","repo":"gwzlchn.github.io","owner":"Gwzlchn","admin":["Gwzlchn"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '4436a6bfb5502abead5d7279b373928a'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+      <div class="col-lg-7 mx-auto nopadding-x-md">
+        <div class="container custom mx-auto">
+          <script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5lzo9y8g750&amp;m=7&amp;c=baff00&amp;cr1=ff007e&amp;f=arial&amp;l=0&amp;bv=40" async="async"></script>
+        </div>
+      </div>
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Powered by Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>With Fluid Theme</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.0/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script>
+  (function() {
+    var enableLang = CONFIG.code_language.enable && CONFIG.code_language.default;
+    var enableCopy = CONFIG.copy_btn;
+    if (!enableLang && !enableCopy) {
+      return;
+    }
+
+    function getBgClass(ele) {
+      return Fluid.utils.getBackgroundLightness(ele) >= 0 ? 'code-widget-light' : 'code-widget-dark';
+    }
+
+    var copyTmpl = '';
+    copyTmpl += '<div class="code-widget">';
+    copyTmpl += 'LANG';
+    copyTmpl += '</div>';
+    jQuery('.markdown-body pre').each(function() {
+      var $pre = jQuery(this);
+      if ($pre.find('code.mermaid').length > 0) {
+        return;
+      }
+      if ($pre.find('span.line').length > 0) {
+        return;
+      }
+
+      var lang = '';
+
+      if (enableLang) {
+        lang = CONFIG.code_language.default;
+        if ($pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2 && $pre.children().hasClass('hljs')) {
+          lang = $pre[0].children[0].classList[1];
+        } else if ($pre[0].getAttribute('data-language')) {
+          lang = $pre[0].getAttribute('data-language');
+        } else if ($pre.parent().hasClass('sourceCode') && $pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2) {
+          lang = $pre[0].children[0].classList[1];
+          $pre.parent().addClass('code-wrapper');
+        } else if ($pre.parent().hasClass('markdown-body') && $pre[0].classList.length === 0) {
+          $pre.wrap('<div class="code-wrapper"></div>');
+        }
+        lang = lang.toUpperCase().replace('NONE', CONFIG.code_language.default);
+      }
+      $pre.append(copyTmpl.replace('LANG', lang).replace('code-widget">',
+        getBgClass($pre[0]) + (enableCopy ? ' code-widget copy-btn" data-clipboard-snippet><i class="iconfont icon-copy"></i>' : ' code-widget">')));
+
+      if (enableCopy) {
+        Fluid.utils.createScript('https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js', function() {
+          var clipboard = new window.ClipboardJS('.copy-btn', {
+            target: function(trigger) {
+              var nodes = trigger.parentNode.childNodes;
+              for (var i = 0; i < nodes.length; i++) {
+                if (nodes[i].tagName === 'CODE') {
+                  return nodes[i];
+                }
+              }
+            }
+          });
+          clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-copy', 'icon-success');
+            setTimeout(function() {
+              e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-success', 'icon-copy');
+            }, 2000);
+          });
+        });
+      }
+    });
+  })();
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
