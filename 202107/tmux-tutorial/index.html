@@ -15,25 +15,25 @@
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
   
   <meta name="theme-color" content="#080000">
-  <meta name="author" content="John Doe">
+  <meta name="author" content="Zelin Wang">
   <meta name="keywords" content="">
   
     <meta name="description" content="本文介绍了我目前使用的Tmux配置。一来是目前的配置用着还算舒服，写此文安利一下；二来也记录一下键位映射，以做备忘。 我的Tmux配置目录 Oh-My-Tmux目前我用的配置是基于Oh-My-Tmux项目改造的。在这个项目上我进行了一些配色的改变（原生的黑白红是在欣赏不起来），最终效果如下图1所示，环境为Windows Terminal + WSL2 + Tmux 3.0a 安装 配置文件的安装这">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Tmux配置与美化">
-<meta property="og:url" content="http://example.com/202107/tmux-tutorial/index.html">
+<meta property="og:url" content="https://gwzlchn.github.io/202107/tmux-tutorial/index.html">
 <meta property="og:site_name" content="Zelin&#39;s Blog">
 <meta property="og:description" content="本文介绍了我目前使用的Tmux配置。一来是目前的配置用着还算舒服，写此文安利一下；二来也记录一下键位映射，以做备忘。 我的Tmux配置目录 Oh-My-Tmux目前我用的配置是基于Oh-My-Tmux项目改造的。在这个项目上我进行了一些配色的改变（原生的黑白红是在欣赏不起来），最终效果如下图1所示，环境为Windows Terminal + WSL2 + Tmux 3.0a 安装 配置文件的安装这">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/img/2021-07-19-tmux-tutorial/tmux-nord.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/2021-07-19-tmux-tutorial/tmux-nord.png">
 <meta property="article:published_time" content="2021-07-19T03:01:02.000Z">
-<meta property="article:modified_time" content="2022-05-18T08:51:30.936Z">
-<meta property="article:author" content="John Doe">
+<meta property="article:modified_time" content="2022-05-18T09:04:58.652Z">
+<meta property="article:author" content="Zelin Wang">
 <meta property="article:tag" content="tmux">
 <meta property="article:tag" content="dotConfig">
 <meta property="article:tag" content="折腾">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/img/2021-07-19-tmux-tutorial/tmux-nord.png">
+<meta name="twitter:image" content="https://gwzlchn.github.io/img/2021-07-19-tmux-tutorial/tmux-nord.png">
   
   
   
@@ -75,7 +75,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.0","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vyfV0Jz8OincT54vffevrlx0-gzGzoHsz","app_key":"abuQhfiaX9zRJg6PYac65qfa","server_url":"https://vyfv0jz8.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"gwzlchn.github.io","root":"/","version":"1.9.0","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vyfV0Jz8OincT54vffevrlx0-gzGzoHsz","app_key":"abuQhfiaX9zRJg6PYac65qfa","server_url":"https://vyfv0jz8.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -472,13 +472,13 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>Tmux配置与美化</div>
-      <div>http://example.com/202107/tmux-tutorial/</div>
+      <div>https://gwzlchn.github.io/202107/tmux-tutorial/</div>
     </div>
     <div class="license-meta">
       
         <div class="license-meta-item">
           <div>作者</div>
-          <div>John Doe</div>
+          <div>Zelin Wang</div>
         </div>
       
       
@@ -487,6 +487,11 @@
           <div>2021年7月19日</div>
         </div>
       
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2022年5月18日</div>
+        </div>
       
       <div class="license-meta-item">
         <div>许可协议</div>
