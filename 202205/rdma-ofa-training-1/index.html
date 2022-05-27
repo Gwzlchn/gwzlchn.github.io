@@ -1,0 +1,1055 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=light>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" href="/img/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#080000">
+  <meta name="author" content="Zelin Wang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本文是对 OFA Training 第一部分的总结。 这是一份很好的学习RDMA的入门材料，从原理讲起，更容易理解。 关键术语1. RDMA – Remote Direct Memory Acces一种应用程序之间的通信机制  Remote：说明通信双方处于远端 Direct：说明通信不需要“更高权限者”的参与 Memory：说明数据需要从应用A的虚拟地址转移到应用B的虚拟地址   2. Verb">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RDMA入门简介">
+<meta property="og:url" content="https://gwzlchn.github.io/202205/rdma-ofa-training-1/index.html">
+<meta property="og:site_name" content="Zelin&#39;s Blog">
+<meta property="og:description" content="本文是对 OFA Training 第一部分的总结。 这是一份很好的学习RDMA的入门材料，从原理讲起，更容易理解。 关键术语1. RDMA – Remote Direct Memory Acces一种应用程序之间的通信机制  Remote：说明通信双方处于远端 Direct：说明通信不需要“更高权限者”的参与 Memory：说明数据需要从应用A的虚拟地址转移到应用B的虚拟地址   2. Verb">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%201.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%202.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%203.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%204.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%205.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%206.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%207.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%208.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%209.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%2010.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%2011.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%2012.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%2013.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%2014.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%2015.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%2016.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%2017.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%2018.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%2019.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%2020.png">
+<meta property="og:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled%2021.png">
+<meta property="article:published_time" content="2022-05-27T12:31:43.000Z">
+<meta property="article:modified_time" content="2022-05-27T12:40:00.347Z">
+<meta property="article:author" content="Zelin Wang">
+<meta property="article:tag" content="RDMA">
+<meta property="article:tag" content="OFA">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://gwzlchn.github.io/img/rdma_ofa_training_part1/Untitled.png">
+  
+  
+  
+  <title>RDMA入门简介 - Zelin&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"gwzlchn.github.io","root":"/","version":"1.9.0","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vyfV0Jz8OincT54vffevrlx0-gzGzoHsz","app_key":"abuQhfiaX9zRJg6PYac65qfa","server_url":"https://vyfv0jz8.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 50vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Zelin&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/banner.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="RDMA入门简介"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-05-27 20:31" pubdate>
+          星期五, 五月 27日 2022, 8:31 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          3.5k 字
+        
+      </span>
+    
+
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">RDMA入门简介</h1>
+            
+            <div class="markdown-body">
+              
+              <p>本文是对 <a target="_blank" rel="noopener" href="https://www.openfabrics.org/training/">OFA Training</a> 第一部分的总结。</p>
+<p>这是一份很好的学习RDMA的入门材料，从原理讲起，更容易理解。</p>
+<h2 id="关键术语"><a href="#关键术语" class="headerlink" title="关键术语"></a>关键术语</h2><h3 id="1-RDMA-–-Remote-Direct-Memory-Acces"><a href="#1-RDMA-–-Remote-Direct-Memory-Acces" class="headerlink" title="1. RDMA – Remote Direct Memory Acces"></a>1. <strong>RDMA – Remote Direct Memory Acces</strong></h3><p>一种应用程序之间的通信机制</p>
+<ol>
+<li>Remote：说明通信双方处于远端</li>
+<li>Direct：说明通信不需要“更高权限者”的参与</li>
+<li>Memory：说明数据需要从应用A的虚拟地址转移到应用B的虚拟地址</li>
+</ol>
+<p><img src="/img/rdma_ofa_training_part1/Untitled.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="2-Verbs"><a href="#2-Verbs" class="headerlink" title="2. Verbs"></a>2. Verbs</h3><p>应用程序用来控制、执行RDMA操作的API</p>
+<p><img src="/img/rdma_ofa_training_part1/Untitled%201.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="3-Channel-Adapter-CA"><a href="#3-Channel-Adapter-CA" class="headerlink" title="3. Channel Adapter - CA"></a>3. <strong>Channel Adapter - CA</strong></h3><p>允许应用程序直接进行RDMA操作的I&#x2F;O设备</p>
+<p>CA的概念中包含了硬件和软件两个部分</p>
+<p>CA目前有三种类型</p>
+<ol>
+<li>iWARP</li>
+<li>InfiniBand</li>
+<li>RocE</li>
+</ol>
+<h3 id="4-Requester-Responder"><a href="#4-Requester-Responder" class="headerlink" title="4. Requester, Responder"></a>4. <strong>Requester, Responder</strong></h3><p><img src="/img/rdma_ofa_training_part1/Untitled%202.png" srcset="/img/loading.gif" lazyload></p>
+<ol>
+<li>RDMA请求发送方可能发送一个“READ”、“WRITE”请求到RDMA接收方</li>
+<li>WRITE请求是将发送方写数据到接收方</li>
+<li>READ请求是发送方读数据到接收方</li>
+</ol>
+<h2 id="RDMA简介"><a href="#RDMA简介" class="headerlink" title="RDMA简介"></a>RDMA简介</h2><h3 id="回顾现有的I-x2F-O机制"><a href="#回顾现有的I-x2F-O机制" class="headerlink" title="回顾现有的I&#x2F;O机制"></a>回顾现有的I&#x2F;O机制</h3><ol>
+<li>按照冯诺依曼体系结构来看，现有的主机通常包括：CPU、MEM、IO子系统</li>
+<li>所有的硬件资源被OS所管理：应用程序想要使用IO资源需要通过OS申请、访问、释放。<ol>
+<li><p>应用程序使用的是虚拟地址</p>
+</li>
+<li><p>IO设备使用的是物理地址</p>
+</li>
+<li><p>地址的转换完全由OS来管理</p>
+<blockquote>
+<p>注：IO设备也可能用虚地址访存，参考IOMMU、SMMU</p>
+</blockquote>
+</li>
+</ol>
+</li>
+<li>应用程序几乎所有的IO操作，都需要发起系统调用，由OS完成<ol>
+<li>应用程序通常IO操作包括三类：存储、网络、IPC</li>
+</ol>
+</li>
+</ol>
+<h3 id="一种新的IO机制：Channel-IO"><a href="#一种新的IO机制：Channel-IO" class="headerlink" title="一种新的IO机制：Channel IO"></a>一种新的IO机制：Channel IO</h3><ol>
+<li><p>IO Channel可以在两个应用程序间建立直接的IO通道</p>
+<ol>
+<li>OS负责创建IO通道，但OS不负责IO传输</li>
+<li>逻辑上看如下图</li>
+</ol>
+<p> <img src="/img/rdma_ofa_training_part1/Untitled%203.png" srcset="/img/loading.gif" lazyload alt="Untitled">
+ </p>
+</li>
+<li><p>IO通道物理结构如下图</p>
+<ol>
+<li>一个IO通道可以在两个Channel Adapters上建立</li>
+<li>IO通道对上层应用提供API进行控制、传输，称为<em>channel interface</em></li>
+<li>channel interface是运行在用户态的</li>
+</ol>
+<p> <img src="/img/rdma_ofa_training_part1/Untitled%204.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
+</li>
+</ol>
+<h2 id="消息传递"><a href="#消息传递" class="headerlink" title="消息传递"></a>消息传递</h2><h2 id="地址翻译"><a href="#地址翻译" class="headerlink" title="地址翻译"></a>地址翻译</h2><h3 id="1-三次地址翻译概述"><a href="#1-三次地址翻译概述" class="headerlink" title="1. 三次地址翻译概述"></a>1. 三次地址翻译概述</h3><p>远程通信需要进行三次地址翻译，如下图所示</p>
+<p><img src="/img/rdma_ofa_training_part1/Untitled%205.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="2-三次地址翻译实现方式"><a href="#2-三次地址翻译实现方式" class="headerlink" title="2. 三次地址翻译实现方式"></a>2. 三次地址翻译实现方式</h3><ol>
+<li><p>基于OS实现三次地址翻译</p>
+<ol>
+<li>OS来完成虚拟→物理&#x2F;物理→虚拟地址的翻译</li>
+<li>OS实现的地址翻译可以保证，每个应用程序对应的虚拟地址都是独立的。</li>
+</ol>
+<p> <img src="/img/rdma_ofa_training_part1/Untitled%206.png" srcset="/img/loading.gif" lazyload>
+ </p>
+</li>
+<li><p>基于通道适配器CA来实现三次地址翻译</p>
+<ol>
+<li><p>通道适配器来完成地址翻译的话则不需要OS介入，如下图所示</p>
+<p> <img src="/img/rdma_ofa_training_part1/Untitled%207.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>地址映射表保存在通道适配器CA中，但是由OS创建；OS不介入到地址翻译的过程中</p>
+<p> <img src="/img/rdma_ofa_training_part1/Untitled%208.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="3-远端虚拟地址直接访问"><a href="#3-远端虚拟地址直接访问" class="headerlink" title="3. 远端虚拟地址直接访问"></a>3. 远端虚拟地址直接访问</h3><ol>
+<li><p>一个IO通道可以暴露给应用程序A一段本机不存在的虚拟地址</p>
+<ol>
+<li>换言之，这段虚拟地址被映射到了远端的应用程序。</li>
+<li>RDMA技术就是在解决：应用程序A如何直接访问远端应用程序的虚拟地址？</li>
+<li></li>
+</ol>
+<p> <img src="/img/rdma_ofa_training_part1/Untitled%209.png" srcset="/img/loading.gif" lazyload alt="**Virtual-to-virtual transfers**"></p>
+</li>
+</ol>
+<h2 id="RDMA通信原理简介"><a href="#RDMA通信原理简介" class="headerlink" title="RDMA通信原理简介"></a>RDMA通信原理简介</h2><h3 id="回顾socket通信原理"><a href="#回顾socket通信原理" class="headerlink" title="回顾socket通信原理"></a>回顾socket通信原理</h3><p><img src="/img/rdma_ofa_training_part1/Untitled%2010.png" srcset="/img/loading.gif" lazyload></p>
+<ol>
+<li>socket应用程序会将应用程序要发送的数据，从应用缓冲区拷贝到内核缓冲区中。</li>
+<li>OS中的TCP栈负责将内核缓冲区的字节传输到远端。</li>
+<li>OS中的TCP栈只负责传输字节（这里没有消息的概念），是字节流</li>
+</ol>
+<h3 id="RDMA通信架构"><a href="#RDMA通信架构" class="headerlink" title="RDMA通信架构"></a>RDMA通信架构</h3><ol>
+<li><p>大概可以分为三层：软件层接口、RDMA协议层、网络传输层</p>
+<p> <img src="/img/rdma_ofa_training_part1/Untitled%2011.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+</ol>
+<h3 id="软件层接口"><a href="#软件层接口" class="headerlink" title="软件层接口"></a>软件层接口</h3><ol>
+<li><p>软件层接口</p>
+<ol>
+<li>提供一个应用程序可以访问的队列接口，用来将应用程序发来的请求保序</li>
+<li>是一个面向消息的架构（区别于socket是面向字节流的）</li>
+</ol>
+</li>
+<li><p>队列接口</p>
+<ol>
+<li>包含两种队列<ol>
+<li>QP：等待被执行的任务队列（Queue Pair）</li>
+<li>CQ：已经完成的任务队列（Completion queue）</li>
+</ol>
+</li>
+<li>CQ中的一个标识可能标志多个QP中的任务已完成</li>
+</ol>
+</li>
+<li><p>Queue Pair</p>
+<ol>
+<li><p>如下图所示</p>
+<p> <img src="/img/rdma_ofa_training_part1/Untitled%2012.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>QP总是成对出现的，包含一个发送队列、一个接受队列</p>
+</li>
+<li><p>一个应用程序可以创建多个QP，一个QP只对应一个应用程序</p>
+</li>
+</ol>
+</li>
+<li><p>Work requests 任务请求</p>
+<ol>
+<li><p>一个 Work requests ，WR 描述了一个等待被执行的任务，可能是一个发送任务，也可能是一个接受任务</p>
+</li>
+<li><p>应用程序发起一个任务请求，任务请求会被保存到队列中，称为Post a WR</p>
+<ol>
+<li>Work Queue中的一个Work reqeuest称为Work Queue Element (WQE – pronounced wookie)</li>
+<li>completion queue entry 称为 CQEs ，pronounced cookie</li>
+</ol>
+<p> <img src="/img/rdma_ofa_training_part1/Untitled%2013.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+</ol>
+</li>
+<li><p>Queue接口是异步的</p>
+<ol>
+<li>应用程序发起请求后，不等待任务完成</li>
+<li>一旦一个或多个任务被完成，CQ中会放入CQE来通知应用程序</li>
+</ol>
+</li>
+<li><p>QP队列中的WRE序列问题</p>
+<ol>
+<li>一个WR（QP中的一个队列）中的所有发送请求是严格保序的</li>
+<li>一个WR中的所有接受请求是严格保序的</li>
+<li>发送队列和接受队列中的元素没有序列要求</li>
+<li>QP之间没有序列要求</li>
+</ol>
+</li>
+<li><p>QP的连接</p>
+<p> <img src="/img/rdma_ofa_training_part1/Untitled%2014.png" srcset="/img/loading.gif" lazyload></p>
+<ol>
+<li>一旦两个应用程序通过设备相连，两个应用程序对应的QP也就连接起来了</li>
+<li>应用A向发送队列写入的WR，会发送到通道的另一端。</li>
+<li>再一次强调，一个QP只能用于一个应用程序</li>
+</ol>
+</li>
+<li><p>软件层接口的使用</p>
+<ol>
+<li>用户创建一个用来收&#x2F;发消息的 Work Request</li>
+<li>为了发送消息，用户使用 <em><strong>Post Send Request , or Post Receive Request Verbs(API)</strong></em> 来将这个WR填充到到某个QP的发送队列或者接受队列</li>
+</ol>
+</li>
+</ol>
+<h3 id="RDMA协议层"><a href="#RDMA协议层" class="headerlink" title="RDMA协议层"></a>RDMA协议层</h3><ol>
+<li><p>RDMA协议层主要用于地址的转换</p>
+<p> <img src="/img/rdma_ofa_training_part1/Untitled%2015.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>RDMA的消息种类</p>
+<ol>
+<li>SEND&#x2F;RECEIVE： 进行通道IO<ol>
+<li><p>如下图所示</p>
+<p> <img src="/img/rdma_ofa_training_part1/Untitled%2016.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>流程如下所示</p>
+<ol>
+<li>请求方Post一个SEND WR到对应的发送队列中<ol>
+<li>SEND WQE中描述了发送端buffer的信息，以及目的端口号DLID、目的QP号</li>
+</ol>
+</li>
+<li>相应方Post一个RECEIVE WR到对应的接受队列中<ol>
+<li>RECEIVE WR描述了下一个接受的信息可以用的内存地址</li>
+</ol>
+</li>
+<li>接受端buffer信息一定要先于发送端信息被post</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>RDMA READ&#x2F;WRITE ：进行远端内存操作<ol>
+<li><p>响应方的buffer由“虚拟地址 + RDMA Key”组成的描述符所描述</p>
+<ol>
+<li>响应方需要将本端的buffer描述符通过SEND 消息传递给请求方</li>
+<li>请求方使用收到的描述符，对远端内存进行READ&#x2F;WRITE操作，之后响应方对buffer不可读写</li>
+<li>直到请求方通知响应方WR&#x2F;RD完成，响应方的应用程序才能读写buffer</li>
+</ol>
+<p> <img src="/img/rdma_ofa_training_part1/Untitled%2017.png" srcset="/img/loading.gif" lazyload>
+ </p>
+</li>
+<li><p>RDMA Write</p>
+<p> 响应方的CA处理dst VA → dst PA 的地址翻译</p>
+<p> <img src="/img/rdma_ofa_training_part1/Untitled%2018.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>RDMA READ</p>
+<p> 左侧是请求方，右侧是响应方</p>
+<p> 请求方的CA处理src VA到src PA的地址转换（读回的数据写入到哪里的问题）</p>
+<p> <img src="/img/rdma_ofa_training_part1/Untitled%2019.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>RDMA 协议层总结</p>
+<ol>
+<li>SEND&#x2F;RECEIVE 请求是一个端到端的操作</li>
+<li>一个SEND操作，会消耗一个请求方QP的WQE，也会消耗一个响应方QP的WQE</li>
+<li>RECEIVE WQE 一定要在 SEND WQE 之前发出</li>
+<li>RDMA READ&#x2F;WRITE 提供了应用程序可以直接访问远端内存缓冲的方法</li>
+</ol>
+</li>
+</ol>
+<h3 id="网络传输层"><a href="#网络传输层" class="headerlink" title="网络传输层"></a>网络传输层</h3><ol>
+<li>传输层必须对上提供可靠的、面向连接的服务</li>
+<li>“可靠”的含义：<strong>数据必须按序交付给接收方，并且不能出现重复和错误</strong><ol>
+<li>不能出现错误：如果出现错误，可靠的服务要么可以从字节序列中恢复错误（比如编码方式可以容错），要么报告给应用程序</li>
+</ol>
+</li>
+<li>“连接”的含义<ol>
+<li>连接指的是两个主机的两队QP进行连接</li>
+</ol>
+</li>
+</ol>
+<h2 id="Verbs-简介"><a href="#Verbs-简介" class="headerlink" title="Verbs 简介"></a>Verbs 简介</h2><p>Verbs API是应用程序进行RDMA消息传递的编程接口，如下图所示</p>
+<p>可以想像成底层为两端的QP对&#x2F;两端的CQ对建立了虚拟的IO通道</p>
+<p><img src="/img/rdma_ofa_training_part1/Untitled%2020.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="应用程序使用channel-IO-进行通信的流程"><a href="#应用程序使用channel-IO-进行通信的流程" class="headerlink" title="应用程序使用channel IO 进行通信的流程"></a>应用程序使用channel IO 进行通信的流程</h3><ol>
+<li>打开一个HCA（Host CA）</li>
+<li>创建一个Protection Domain</li>
+<li>创建一个Queue Pair</li>
+<li>创建一个&#x2F;或一组 Completion Queue</li>
+<li>注册内存区域Memory Regions</li>
+<li>发起任务请求Work reqeust</li>
+<li>等待CQ的完成任务通知</li>
+</ol>
+<h3 id="Verbs的含义"><a href="#Verbs的含义" class="headerlink" title="Verbs的含义"></a>Verbs的含义</h3><ol>
+<li>Verb一次最早由InfiniBand Architecture Specification提出，大约在1999年</li>
+<li>一个Verb更多地是在描述一个动作“语义”，并没有描述编程接口，也与各个OS特性无关的</li>
+<li>不同厂商的RDMA实现：RoCE、IB、IWARP，均对用户提供统一的Verbs API接口</li>
+</ol>
+<h2 id="RDMA的隔离和保护机制"><a href="#RDMA的隔离和保护机制" class="headerlink" title="RDMA的隔离和保护机制"></a>RDMA的隔离和保护机制</h2><ol>
+<li>Protection Domain的隔离与保护<ol>
+<li><p>每个PD和下列组件绑定在一起</p>
+<ol>
+<li>一个或者多个QPs</li>
+<li>一段内存区域</li>
+<li>一个应用程序</li>
+<li></li>
+</ol>
+<p> <img src="/img/rdma_ofa_training_part1/Untitled%2021.png" srcset="/img/loading.gif" lazyload>
+ </p>
+</li>
+<li><p>PD由Verbs调用而分配出来</p>
+</li>
+<li><p>PD确保只有注册到该虚拟内存的QP才能访问它。</p>
+</li>
+</ol>
+</li>
+<li>Memory Registration<ol>
+<li>应用程序可以向HCA注册一段内存区域</li>
+<li>HCA返回这段内存的描述符<ol>
+<li>Virtual Address</li>
+<li>RKEY</li>
+<li>LKEY</li>
+</ol>
+</li>
+<li>LKEY是用来让应用程序访问这段内存的</li>
+<li>RKEY是用来让远端应用程序访问这段内存的（将会传给远端的调用者，此时本地是响应者）</li>
+</ol>
+</li>
+<li>Channel<ol>
+<li>用户通过Memory Registration 方法来创建本进程绑定的WQ和CQ，<ol>
+<li>创建出来的通道位于本进程的虚拟地址范围内。</li>
+<li>读写访问不涉及内核态切换</li>
+</ol>
+</li>
+<li>channel之间的隔离依靠OS提供的进程隔离机制</li>
+</ol>
+</li>
+</ol>
+
+              
+            </div>
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/RDMA/">#RDMA</a>
+      
+        <a href="/tags/OFA/">#OFA</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>RDMA入门简介</div>
+      <div>https://gwzlchn.github.io/202205/rdma-ofa-training-1/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Zelin Wang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年5月27日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2022年5月27日</div>
+        </div>
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/202205/rust-traits/" title="Rust标准库涉及的Trait">
+                        <span class="hidden-mobile">Rust标准库涉及的Trait</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.7.2/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"92499b3e9ca46e054919","clientSecret":"eef0bc1146a28cdb3d17fd4cf149158cab4ffa2f","repo":"gwzlchn.github.io","owner":"Gwzlchn","admin":["Gwzlchn"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '6b91a476933cc8fe575c35ed6fd93ef5'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+      <div class="col-lg-7 mx-auto nopadding-x-md">
+        <div class="container custom mx-auto">
+          <script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5lzo9y8g750&amp;m=7&amp;c=baff00&amp;cr1=ff007e&amp;f=arial&amp;l=0&amp;bv=40" async="async"></script>
+        </div>
+      </div>
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Powered by Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>With Fluid Theme</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.0/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script>
+  (function() {
+    var enableLang = CONFIG.code_language.enable && CONFIG.code_language.default;
+    var enableCopy = CONFIG.copy_btn;
+    if (!enableLang && !enableCopy) {
+      return;
+    }
+
+    function getBgClass(ele) {
+      return Fluid.utils.getBackgroundLightness(ele) >= 0 ? 'code-widget-light' : 'code-widget-dark';
+    }
+
+    var copyTmpl = '';
+    copyTmpl += '<div class="code-widget">';
+    copyTmpl += 'LANG';
+    copyTmpl += '</div>';
+    jQuery('.markdown-body pre').each(function() {
+      var $pre = jQuery(this);
+      if ($pre.find('code.mermaid').length > 0) {
+        return;
+      }
+      if ($pre.find('span.line').length > 0) {
+        return;
+      }
+
+      var lang = '';
+
+      if (enableLang) {
+        lang = CONFIG.code_language.default;
+        if ($pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2 && $pre.children().hasClass('hljs')) {
+          lang = $pre[0].children[0].classList[1];
+        } else if ($pre[0].getAttribute('data-language')) {
+          lang = $pre[0].getAttribute('data-language');
+        } else if ($pre.parent().hasClass('sourceCode') && $pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2) {
+          lang = $pre[0].children[0].classList[1];
+          $pre.parent().addClass('code-wrapper');
+        } else if ($pre.parent().hasClass('markdown-body') && $pre[0].classList.length === 0) {
+          $pre.wrap('<div class="code-wrapper"></div>');
+        }
+        lang = lang.toUpperCase().replace('NONE', CONFIG.code_language.default);
+      }
+      $pre.append(copyTmpl.replace('LANG', lang).replace('code-widget">',
+        getBgClass($pre[0]) + (enableCopy ? ' code-widget copy-btn" data-clipboard-snippet><i class="iconfont icon-copy"></i>' : ' code-widget">')));
+
+      if (enableCopy) {
+        Fluid.utils.createScript('https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js', function() {
+          var clipboard = new window.ClipboardJS('.copy-btn', {
+            target: function(trigger) {
+              var nodes = trigger.parentNode.childNodes;
+              for (var i = 0; i < nodes.length; i++) {
+                if (nodes[i].tagName === 'CODE') {
+                  return nodes[i];
+                }
+              }
+            }
+          });
+          clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-copy', 'icon-success');
+            setTimeout(function() {
+              e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-success', 'icon-copy');
+            }, 2000);
+          });
+        });
+      }
+    });
+  })();
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
