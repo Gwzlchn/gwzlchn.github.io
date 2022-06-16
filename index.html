@@ -60,7 +60,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"gwzlchn.github.io","root":"/","version":"1.9.0","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vyfV0Jz8OincT54vffevrlx0-gzGzoHsz","app_key":"abuQhfiaX9zRJg6PYac65qfa","server_url":"https://vyfv0jz8.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"gwzlchn.github.io","root":"/","version":"1.9.1","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vyfV0Jz8OincT54vffevrlx0-gzGzoHsz","app_key":"abuQhfiaX9zRJg6PYac65qfa","server_url":"https://vyfv0jz8.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -181,7 +181,7 @@
 <div id="banner" class="banner" parallax=true
      style="background: url('/img/banner.jpg') no-repeat center center; background-size: cover;">
   <div class="full-bg-img">
-    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0)">
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
@@ -223,14 +223,58 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/202206/rust-for-linux-01/" target="_self">
+          体验rust-for-linux
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/202206/rust-for-linux-01/" target="_self">
+        <div>
+          编译x86 kernel + 构建文件系统 Rust依赖安装  参考：Rust for linux: Quick Start 使用用cargo&#x2F;rustup安装rustc + rust-src + bindgen 安装LLVM-14 参考https:&#x2F;&#x2F;apt.llvm.org&#x2F; bash -c &quot;$(wget -O - https:&#x2F;&#x2F;apt.llvm.org&#x2F;llvm.sh
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-06-16 11:16" pubdate>
+              2022-06-16
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Rust/">#Rust</a>
+            
+              <a href="/tags/kernel/">#kernel</a>
+            
+              <a href="/tags/Rust-for-linux/">#Rust-for-linux</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/202205/rdma-ofa-training-1/" target="_self">
           RDMA入门简介
         </a>
       </h1>
 
-      <a class="index-excerpt" href="/202205/rdma-ofa-training-1/" target="_self">
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/202205/rdma-ofa-training-1/" target="_self">
         <div>
-          
           本文是对 OFA Training 第一部分的总结。 这是一份很好的学习RDMA的入门材料，从原理讲起，更容易理解。 关键术语1. RDMA – Remote Direct Memory Acces一种应用程序之间的通信机制  Remote：说明通信双方处于远端 Direct：说明通信不需要“更高权限者”的参与 Memory：说明数据需要从应用A的虚拟地址转移到应用B的虚拟地址   2. Verb
         </div>
       </a>
@@ -270,9 +314,9 @@
         </a>
       </h1>
 
-      <a class="index-excerpt" href="/202205/rust-traits/" target="_self">
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/202205/rust-traits/" target="_self">
         <div>
-          
           本篇文章是对下面文章的阅读笔记，不保证可靠性，希望大家还是以Rust标准库源码&#x2F;英文原文为准 Tour of Rust’s Standard Library Traits 本文亦参考了下面这篇文章，但该文章排版有混乱的地方Tour of Rust’s Standard Library Traits中译 Trait基础1. Self指代实现的类型1234567891011121314151
         </div>
       </a>
@@ -310,9 +354,9 @@
         </a>
       </h1>
 
-      <a class="index-excerpt" href="/202205/cs144-lab4/" target="_self">
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/202205/cs144-lab4/" target="_self">
         <div>
-          
           实验简介这个实验主要完成TCP Endpoint的功能，一个TCP端点包含一个TCPSender，和一个TCPReceiver。进行TCP连接的时候，通常是一个TCP端点A向另一个TCP端点B发送“连接建立”请求，经过三次握手后TCP连接建立。之后两个端点间可以相互传送数据。每当一端要发送的字节流到达EOF的时候，向对端发送一个“连接关闭”请求，最后当两个端点均已经发送连接关闭的请求，并且都接到了
         </div>
       </a>
@@ -354,9 +398,9 @@
         </a>
       </h1>
 
-      <a class="index-excerpt" href="/202205/cs144-lab3/" target="_self">
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/202205/cs144-lab3/" target="_self">
         <div>
-          
           实验简介Lab3这个实验主要完成的是TCP发送端的功能。应用程序写入字节流到socket，TCP Sender负责将本端的字节流发送到对端。 具体地说，TCP Sender负责：   根据对端的“接受窗口大小 + 期望收到的下一个字节”，来构造要发送的TCP报文头部和数据。  如果超出规定的时间后仍未收到一个已发送报文的应答，则需要重传这个报文。   要实现的功能有：1. 如何构造要发送的TCP头
         </div>
       </a>
@@ -398,9 +442,9 @@
         </a>
       </h1>
 
-      <a class="index-excerpt" href="/202205/cs144-lab2/" target="_self">
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/202205/cs144-lab2/" target="_self">
         <div>
-          
           实验简介这个实验主要完成的是，TCP接受端应该如何工作，才能正确地将TCP Payload交付给socket的问题。 CS144 Lab实现的是这个场景：NIC从链路上收到MAC数据包，交给kernel；kernel解析MAC头后，将这个包传给虚拟的tun设备。CS144 Lab中的其他辅助函数从tun设备中读取IP包，拆包后将完整TCP报文交给tcp_receiver&#x2F;tcp_sender 这两
         </div>
       </a>
@@ -442,9 +486,9 @@
         </a>
       </h1>
 
-      <a class="index-excerpt" href="/202205/cs144-lab1/" target="_self">
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/202205/cs144-lab1/" target="_self">
         <div>
-          
           实验简介Lab0中完成了有序字节流的写入和读出，这个实验需要完成乱序字节流的重组、写入和读出。也就是说，Lab1实验手册中的这幅图，蓝色和绿色部分我们已经在Lab0中完成了，我们在Lab1中只需要完成红色部分的重组即可。  思路(这个思路有很大的性能优化空间)  使用map存储乱序字节流，key&#x3D;(起始下标，结束下标)，均从0开始，value&#x3D;(字符串)，pair&lt;int,int&gt;作为
         </div>
       </a>
@@ -486,9 +530,9 @@
         </a>
       </h1>
 
-      <a class="index-excerpt" href="/202205/cs144-lab0/" target="_self">
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/202205/cs144-lab0/" target="_self">
         <div>
-          
           实验环境 这次打算用 Jetbrains Gateway进行远程开发。按照 CS144 README 进行远端Clion的配置。注意环境变量和编译时传给cmake的宏的设置。 安装TcpDump，最好从Github的源码编译安装，5.0版本后的tcpdump可以保存pcap文件中同时输出到标准输出流中。  实验0使用TCPsocket和一个webserver（对端监听80端口）进行通信，类似于cu
         </div>
       </a>
@@ -536,9 +580,9 @@
         </a>
       </h1>
 
-      <a class="index-excerpt" href="/202107/tmux-tutorial/" target="_self">
+      
+      <a class="index-excerpt " href="/202107/tmux-tutorial/" target="_self">
         <div>
-          
           本文介绍了我目前使用的Tmux配置。一来是目前的配置用着还算舒服，写此文安利一下；二来也记录一下键位映射，以做备忘。 我的Tmux配置目录 Oh-My-Tmux目前我用的配置是基于Oh-My-Tmux项目改造的。在这个项目上我进行了一些配色的改变（原生的黑白红是在欣赏不起来），最终效果如下图1所示，环境为Windows Terminal + WSL2 + Tmux 3.0a 安装 配置文件的安装这
         </div>
       </a>
@@ -586,9 +630,9 @@
         </a>
       </h1>
 
-      <a class="index-excerpt" href="/202106/6-s081-lab0/" target="_self">
+      
+      <a class="index-excerpt " href="/202106/6-s081-lab0/" target="_self">
         <div>
-          
           写在前面的话为了更好地理解RISC-V指令集，也为了熟悉QEMU，所以选择刷一遍MIT-6.S081的实验。希望不仅仅以做Lab为目的，同时也精读几篇OS领域经典文章。  可能好多人都卡在环境准备上，但后来我发现：趁早动手做实验，比准备环境更重要~ 环境搭建参考 6.S081 官方的配置教程：Tools 本人用的环境是基于Qemu(KVM)上的Ubuntu 20.04。 首先安装RISC-V工具链
         </div>
       </a>
@@ -634,9 +678,9 @@
         </a>
       </h1>
 
-      <a class="index-excerpt" href="/202106/Hexo-CI/" target="_self">
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/202106/Hexo-CI/" target="_self">
         <div>
-          
           介绍本文将介绍如何利用Github Actions功能自动部署博客。这样本地就不需要安装Node.js以及Hexo包，写完文档直接push到远程仓库，由Github Actions自动部署到博客网站上。由于本网站现阶段托管于github.io，因此我目前的需求是，推送博客文章的更改后，生成对应的静态网页，最后将静态网页内容自动推送到 username.github.io 这个仓库中。 必要的准备测
         </div>
       </a>
