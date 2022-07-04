@@ -27,7 +27,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://gwzlchn.github.io/img/cs144-pic/Lab2-TCP-hdr.png">
 <meta property="article:published_time" content="2022-05-18T08:39:40.000Z">
-<meta property="article:modified_time" content="2022-06-16T03:22:42.352Z">
+<meta property="article:modified_time" content="2022-07-04T14:43:43.039Z">
 <meta property="article:author" content="Zelin Wang">
 <meta property="article:tag" content="CS144">
 <meta property="article:tag" content="TCP&#x2F;IP">
@@ -75,7 +75,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"gwzlchn.github.io","root":"/","version":"1.9.1","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vyfV0Jz8OincT54vffevrlx0-gzGzoHsz","app_key":"abuQhfiaX9zRJg6PYac65qfa","server_url":"https://vyfv0jz8.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"gwzlchn.github.io","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vyfV0Jz8OincT54vffevrlx0-gzGzoHsz","app_key":"abuQhfiaX9zRJg6PYac65qfa","server_url":"https://vyfv0jz8.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -84,6 +84,25 @@
   </script>
   <script  src="/js/utils.js" ></script>
   <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
 
   
 <meta name="generator" content="Hexo 5.4.2"></head>
@@ -274,9 +293,10 @@
             <!-- SEO header -->
             <h1 style="display: none">CS144-Lab2实验笔记</h1>
             
-            <div class="markdown-body">
-              
-              <h2 id="实验简介"><a href="#实验简介" class="headerlink" title="实验简介"></a>实验简介</h2><p>这个实验主要完成的是，TCP接受端应该如何工作，才能正确地将TCP Payload交付给socket的问题。</p>
+            
+              <div class="markdown-body">
+                
+                <h2 id="实验简介"><a href="#实验简介" class="headerlink" title="实验简介"></a>实验简介</h2><p>这个实验主要完成的是，TCP接受端应该如何工作，才能正确地将TCP Payload交付给socket的问题。</p>
 <p>CS144 Lab实现的是这个场景：NIC从链路上收到MAC数据包，交给kernel；kernel解析MAC头后，将这个包传给虚拟的tun设备。CS144 Lab中的其他辅助函数从tun设备中读取IP包，拆包后将完整TCP报文交给<code>tcp_receiver/tcp_sender</code> 这两个我们自己写的程序。</p>
 <p><code>tcp_sender</code> 负责：解析包头、将Payload交付给socket，这样应用程序就能从socket中读取数据了。</p>
 <h2 id="实验思路"><a href="#实验思路" class="headerlink" title="实验思路"></a>实验思路</h2><h3 id="1-序列号与绝对序列号的相互转换"><a href="#1-序列号与绝对序列号的相互转换" class="headerlink" title="1. 序列号与绝对序列号的相互转换"></a>1. 序列号与绝对序列号的相互转换</h3><p>对于这个问题不必考虑SYN&#x2F;FIN是否计算的问题，因为二者都包含了SYN&#x2F;FIN</p>
@@ -314,8 +334,9 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TCPReceiver</span> &#123;</span><br>    <span class="hljs-comment">//! Some TCP Flag received in the first and the last segment from other side</span><br>    <span class="hljs-keyword">bool</span> _syn&#123;<span class="hljs-literal">false</span>&#125;;<br>    <span class="hljs-keyword">bool</span> _fin&#123;<span class="hljs-literal">false</span>&#125;;<br>    WrappingInt32 _isn&#123;<span class="hljs-number">0</span>&#125;;<br><br>...<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>具体的实现</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">//  libsponge/tcp_receiver.cc </span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">TCPReceiver::segment_received</span><span class="hljs-params">(<span class="hljs-keyword">const</span> TCPSegment &amp;seg)</span> </span>&#123;<br>    <span class="hljs-keyword">const</span> <span class="hljs-keyword">auto</span> &amp;hdr = seg.<span class="hljs-built_in">header</span>();<br>    <span class="hljs-keyword">const</span> <span class="hljs-keyword">auto</span> &amp;data = seg.<span class="hljs-built_in">payload</span>();<br>    <span class="hljs-comment">// Not receive SYN yet</span><br>    <span class="hljs-keyword">if</span> (!_syn) &#123;<br>        <span class="hljs-keyword">if</span> (!hdr.syn) &#123;<br>            <span class="hljs-keyword">return</span>;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            _syn = <span class="hljs-literal">true</span>;<br>            <span class="hljs-comment">// the sequence number of the first segment is the initial sequence number</span><br>            _isn = hdr.seqno;<br>        &#125;<br>    &#125;<br>    <span class="hljs-comment">// NOW, received SYN from the other side</span><br>    <span class="hljs-keyword">if</span> (hdr.fin) &#123;<br>        _fin = <span class="hljs-literal">true</span>;<br>    &#125;<br>    <span class="hljs-comment">// the checkpoint should be the last absolute sequence number</span><br>    <span class="hljs-keyword">size_t</span> ckpt = <span class="hljs-built_in">stream_out</span>().<span class="hljs-built_in">bytes_written</span>() + <span class="hljs-number">1</span>;<br>    <span class="hljs-keyword">uint64_t</span> absolute_seqno = <span class="hljs-built_in">unwrap</span>(hdr.seqno, _isn, ckpt);<br>    <span class="hljs-comment">// In the first segment, the stream index should be 0, or this index should be absolute seqno minus 1</span><br>    <span class="hljs-keyword">uint64_t</span> stream_idx = absolute_seqno + <span class="hljs-keyword">static_cast</span>&lt;<span class="hljs-keyword">uint64_t</span>&gt;(hdr.syn) - <span class="hljs-number">1</span>;<br>    _reassembler.<span class="hljs-built_in">push_substring</span>(data.<span class="hljs-built_in">copy</span>(), stream_idx, _fin);<br>&#125;<br><br><span class="hljs-function">optional&lt;WrappingInt32&gt; <span class="hljs-title">TCPReceiver::ackno</span><span class="hljs-params">()</span> <span class="hljs-keyword">const</span> </span>&#123;<br>    <span class="hljs-keyword">if</span> (!_syn) &#123;<br>        <span class="hljs-keyword">return</span> nullopt;<br>    &#125;<br>    <span class="hljs-comment">// written bytes + SYN</span><br>    <span class="hljs-keyword">uint64_t</span> absolute_ackno = <span class="hljs-built_in">stream_out</span>().<span class="hljs-built_in">bytes_written</span>() + <span class="hljs-number">1</span>;<br>    <span class="hljs-comment">// Only when there is no segment on the fly and receive the FIN flag, then the absolute seq should add 1</span><br>    absolute_ackno += (_fin &amp;&amp; _reassembler.<span class="hljs-built_in">unassembled_bytes</span>() == <span class="hljs-number">0</span>) ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">wrap</span>(absolute_ackno, _isn);<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">size_t</span> <span class="hljs-title">TCPReceiver::window_size</span><span class="hljs-params">()</span> <span class="hljs-keyword">const</span> </span>&#123;<br>    <span class="hljs-comment">// the capacity minus the bytes have been reassembled, but not consumed</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>-&gt;_capacity - <span class="hljs-keyword">this</span>-&gt;<span class="hljs-built_in">stream_out</span>().<span class="hljs-built_in">buffer_size</span>();<br>&#125;<br></code></pre></td></tr></table></figure>
-              
-            </div>
+                
+              </div>
+            
             <hr/>
             <div>
               <div class="post-metas my-3">
@@ -359,7 +380,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2022年6月16日</div>
+          <div>2022年7月4日</div>
         </div>
       
       <div class="license-meta-item">
@@ -477,6 +498,7 @@
 
 
   
+
 
 
 
@@ -602,25 +624,6 @@
 
 
   
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-    
-  
-
-
-
-
-  
     <script  src="/js/img-lazyload.js" ></script>
   
 
@@ -655,74 +658,9 @@
 </script>
 
 
-  <script>
-  (function() {
-    var enableLang = CONFIG.code_language.enable && CONFIG.code_language.default;
-    var enableCopy = CONFIG.copy_btn;
-    if (!enableLang && !enableCopy) {
-      return;
-    }
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
 
-    function getBgClass(ele) {
-      return Fluid.utils.getBackgroundLightness(ele) >= 0 ? 'code-widget-light' : 'code-widget-dark';
-    }
-
-    var copyTmpl = '';
-    copyTmpl += '<div class="code-widget">';
-    copyTmpl += 'LANG';
-    copyTmpl += '</div>';
-    jQuery('.markdown-body pre').each(function() {
-      var $pre = jQuery(this);
-      if ($pre.find('code.mermaid').length > 0) {
-        return;
-      }
-      if ($pre.find('span.line').length > 0) {
-        return;
-      }
-
-      var lang = '';
-
-      if (enableLang) {
-        lang = CONFIG.code_language.default;
-        if ($pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2 && $pre.children().hasClass('hljs')) {
-          lang = $pre[0].children[0].classList[1];
-        } else if ($pre[0].getAttribute('data-language')) {
-          lang = $pre[0].getAttribute('data-language');
-        } else if ($pre.parent().hasClass('sourceCode') && $pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2) {
-          lang = $pre[0].children[0].classList[1];
-          $pre.parent().addClass('code-wrapper');
-        } else if ($pre.parent().hasClass('markdown-body') && $pre[0].classList.length === 0) {
-          $pre.wrap('<div class="code-wrapper"></div>');
-        }
-        lang = lang.toUpperCase().replace('NONE', CONFIG.code_language.default);
-      }
-      $pre.append(copyTmpl.replace('LANG', lang).replace('code-widget">',
-        getBgClass($pre[0]) + (enableCopy ? ' code-widget copy-btn" data-clipboard-snippet><i class="iconfont icon-copy"></i>' : ' code-widget">')));
-
-      if (enableCopy) {
-        Fluid.utils.createScript('https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js', function() {
-          var clipboard = new window.ClipboardJS('.copy-btn', {
-            target: function(trigger) {
-              var nodes = trigger.parentNode.childNodes;
-              for (var i = 0; i < nodes.length; i++) {
-                if (nodes[i].tagName === 'CODE') {
-                  return nodes[i];
-                }
-              }
-            }
-          });
-          clipboard.on('success', function(e) {
-            e.clearSelection();
-            e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-copy', 'icon-success');
-            setTimeout(function() {
-              e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-success', 'icon-copy');
-            }, 2000);
-          });
-        });
-      }
-    });
-  })();
-</script>
+  <script>Fluid.plugins.codeWidget();</script>
 
 
   
@@ -758,9 +696,9 @@
 
   <script>Fluid.plugins.imageCaption();</script>
 
-  <script  src="/js/local-search.js" ></script>
-
   <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
 
 
 
