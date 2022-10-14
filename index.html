@@ -60,7 +60,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"gwzlchn.github.io","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vyfV0Jz8OincT54vffevrlx0-gzGzoHsz","app_key":"abuQhfiaX9zRJg6PYac65qfa","server_url":"https://vyfv0jz8.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"gwzlchn.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vyfV0Jz8OincT54vffevrlx0-gzGzoHsz","app_key":"abuQhfiaX9zRJg6PYac65qfa","server_url":"https://vyfv0jz8.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -238,6 +238,50 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/202210/rdma-stack-03/" target="_self">
+          RXE中的定时器
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/202210/rdma-stack-03/" target="_self">
+        <div>
+          1. RDMA_RXE中结构体的定义和初始化 每个 rxe_qp 包含两个定时器，一个重传定时器 retrans_timer，一个 RNR NAK （收到对端receiver 未准备好的NAK包后，要定时重传）定时器  RNR NAK 可参考IB Spec 1.3 Sec. 9.7.5.2.8 RNR NAK   12345678910111213141516// drivers/infiniba
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-10-15 00:05" pubdate>
+              2022-10-15
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/RDMA/">#RDMA</a>
+            
+              <a href="/tags/libRXE/">#libRXE</a>
+            
+              <a href="/tags/Soft-ROCE/">#Soft-ROCE</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/202208/rdma-stack-02/" target="_self">
           RDMA-RoCEv2 ibv_reg_mr 分析
         </a>
@@ -246,7 +290,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/202208/rdma-stack-02/" target="_self">
         <div>
-          1. 用户程序调用 IBVerbs 用户调用的ibv_reg_mr中包含四个参数，如下所示  12struct ibv_mr *ibv_reg_mr(struct ibv_pd *pd, void *addr,                          size_t length, enum ibv_access_flags acces  https:&#x2F;&#x2F;www.rdmamojo.com&#x2F;
+          1. 用户程序调用 IBVerbs 用户调用的ibv_reg_mr中包含四个参数，如下所示  12struct ibv_mr *ibv_reg_mr(struct ibv_pd *pd, void *addr,                          size_t length, enum ibv_access_flags acces  https://www.rdmamojo.com/
         </div>
       </a>
 
@@ -292,7 +336,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/202207/rdma-stack-01/" target="_self">
         <div>
-          希望通过这篇文章来梳理  libibverbs提供的用户态Verbs API是如何进行设备操作&#x2F;数据通信的，以Soft-RXE实现为例。 基于kernel: 5.19-rc1 基于rdma-core: v34.0  RDMA Stack的内核支持 参考：https:&#x2F;&#x2F;www.kernel.org&#x2F;doc&#x2F;html&#x2F;latest&#x2F;translations&#x2F;zh_CN&#x2F;infin
+          希望通过这篇文章来梳理  libibverbs提供的用户态Verbs API是如何进行设备操作&#x2F;数据通信的，以Soft-RXE实现为例。 基于kernel: 5.19-rc1 基于rdma-core: v34.0  RDMA Stack的内核支持 参考：https://www.kernel.org/doc/html/latest/translations/zh_CN&#x2F;infin
         </div>
       </a>
 
@@ -338,7 +382,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/202206/rust-for-linux-01/" target="_self">
         <div>
-          编译x86 kernel + 构建文件系统 Rust依赖安装  参考：Rust for linux: Quick Start 使用用cargo&#x2F;rustup安装rustc + rust-src + bindgen 安装LLVM-14 参考https:&#x2F;&#x2F;apt.llvm.org&#x2F; bash -c &quot;$(wget -O - https:&#x2F;&#x2F;apt.llvm.org&#x2F;llvm.sh
+          编译x86 kernel + 构建文件系统 Rust依赖安装  参考：Rust for linux: Quick Start 使用用cargo&#x2F;rustup安装rustc + rust-src + bindgen 安装LLVM-14 参考https://apt.llvm.org/ bash -c &quot;$(wget -O - https://apt.llvm.org/llvm.sh
         </div>
       </a>
 
@@ -552,7 +596,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/202205/cs144-lab2/" target="_self">
         <div>
-          实验简介这个实验主要完成的是，TCP接受端应该如何工作，才能正确地将TCP Payload交付给socket的问题。 CS144 Lab实现的是这个场景：NIC从链路上收到MAC数据包，交给kernel；kernel解析MAC头后，将这个包传给虚拟的tun设备。CS144 Lab中的其他辅助函数从tun设备中读取IP包，拆包后将完整TCP报文交给tcp_receiver&#x2F;tcp_sender 这两
+          实验简介这个实验主要完成的是，TCP接受端应该如何工作，才能正确地将TCP Payload交付给socket的问题。 CS144 Lab实现的是这个场景：NIC从链路上收到MAC数据包，交给kernel；kernel解析MAC头后，将这个包传给虚拟的tun设备。CS144 Lab中的其他辅助函数从tun设备中读取IP包，拆包后将完整TCP报文交给tcp_receiver/tcp_sender 这两
         </div>
       </a>
 
@@ -596,7 +640,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/202205/cs144-lab1/" target="_self">
         <div>
-          实验简介Lab0中完成了有序字节流的写入和读出，这个实验需要完成乱序字节流的重组、写入和读出。也就是说，Lab1实验手册中的这幅图，蓝色和绿色部分我们已经在Lab0中完成了，我们在Lab1中只需要完成红色部分的重组即可。  思路(这个思路有很大的性能优化空间)  使用map存储乱序字节流，key&#x3D;(起始下标，结束下标)，均从0开始，value&#x3D;(字符串)，pair&lt;int,int&gt;作为
+          实验简介Lab0中完成了有序字节流的写入和读出，这个实验需要完成乱序字节流的重组、写入和读出。也就是说，Lab1实验手册中的这幅图，蓝色和绿色部分我们已经在Lab0中完成了，我们在Lab1中只需要完成红色部分的重组即可。  思路(这个思路有很大的性能优化空间)  使用map存储乱序字节流，key=(起始下标，结束下标)，均从0开始，value=(字符串)，pair&lt;int,int&gt;作为
         </div>
       </a>
 
