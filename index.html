@@ -246,7 +246,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/202210/rdma-stack-03/" target="_self">
         <div>
-          1. RDMA_RXE中结构体的定义和初始化 每个 rxe_qp 包含两个定时器，一个重传定时器 retrans_timer，一个 RNR NAK （收到对端receiver 未准备好的NAK包后，要定时重传）定时器  RNR NAK 可参考IB Spec 1.3 Sec. 9.7.5.2.8 RNR NAK   12345678910111213141516// drivers/infiniba
+          1. RDMA_RXE中结构体的定义和初始化 每个 rxe_qp 包含两个重传定时器，一个重传定时器用于指示未收到对端ACK：retrans_timer，另一个重传计时器指示收到了一个 RNR NAK （收到对端receiver 未准备好的NAK包后，同样要定时重传）：rnrnak_timer  RNR NAK 可参考IB Spec 1.3 Sec. 9.7.5.2.8 RNR NAK   123
         </div>
       </a>
 
