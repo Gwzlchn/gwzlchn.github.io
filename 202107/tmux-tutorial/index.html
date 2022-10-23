@@ -27,7 +27,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://gwzlchn.github.io/img/2021-07-19-tmux-tutorial/tmux-nord.png">
 <meta property="article:published_time" content="2021-07-19T03:01:02.000Z">
-<meta property="article:modified_time" content="2022-10-16T11:54:57.697Z">
+<meta property="article:modified_time" content="2022-10-23T05:56:53.594Z">
 <meta property="article:author" content="Zelin Wang">
 <meta property="article:tag" content="tmux">
 <meta property="article:tag" content="dotConfig">
@@ -310,13 +310,13 @@
 </ul>
 </li>
 <li><p>安装配置</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ <span class="hljs-built_in">cd</span><br>$ git <span class="hljs-built_in">clone</span> https://github.com/Gwzlchn/dotConfig.git<br>$ <span class="hljs-built_in">ln</span> -s -f ~/dotConfig/tmux/.tmux.conf<br>$ <span class="hljs-built_in">cp</span> ~/dotConfig/tmux/.tmux.conf.local .<br></code></pre></td></tr></table></figure></li>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ <span class="hljs-built_in">cd</span><br>$ git <span class="hljs-built_in">clone</span> https://github.com/Gwzlchn/dotConfig.git<br>$ ln -s -f ~/dotConfig/tmux/.tmux.conf<br>$ cp ~/dotConfig/tmux/.tmux.conf.local .<br></code></pre></td></tr></table></figure></li>
 </ul>
 </li>
 <li><p>字体的安装<br>本配置文件中的一些符号图标的显示依赖<code>Nerd Font</code>字体，所以需要在终端软件所在的系统中安装<code>Nerd Font</code>字体。   </p>
 <p><code>Nerd Font</code>并不是一种字体，而是在原有字体上增加了一些Unicode符号的一个字体补丁。你既可以选择手动为自己目前用的字体打上<code>Nerd Font</code>补丁（参考<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/150097941">使用nerd-font&#x2F;font-patcher为字体添加字体图标</a>），也可以在<a target="_blank" rel="noopener" href="https://www.nerdfonts.com/font-downloads">Nerd Font Download</a>页面下载打好补丁后的字体。我用的是<code>FiraCode NerdFont</code>，这个字体看起来比较纤细，同时带连字符效果。  </p>
 <p>我目前用的终端是<code>Windows Terminal</code>,Windows安装字体比较简单，点开字体安装即可。之后需要将终端软件配置为刚刚安装的字体。打开<code>Windows Terminal</code>的配置文件<code>settings.json</code>，在<code>profiles.defaults</code>字段下增加<code>&quot;fontFace&quot;: xxxx</code>这个属性。如下所示。</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs json"> <span class="hljs-attr">&quot;profiles&quot;</span><span class="hljs-punctuation">:</span><br> <span class="hljs-punctuation">&#123;</span><br>     <span class="hljs-attr">&quot;defaults&quot;</span><span class="hljs-punctuation">:</span><br>     <span class="hljs-punctuation">&#123;</span><br>         <span class="hljs-comment">// Put settings here that you want to apply to all profiles.</span><br>         <span class="hljs-comment">// &quot;colorScheme&quot;: &quot;Dracula&quot;,</span><br>         <span class="hljs-comment">//&quot;acrylicOpacity&quot; : 0.4,</span><br>         <span class="hljs-attr">&quot;useAcrylic&quot;</span> <span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span><br>         <span class="hljs-attr">&quot;fontSize&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">13</span><span class="hljs-punctuation">,</span><br>         <span class="hljs-attr">&quot;fontFace&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;FiraCode Nerd Font&quot;</span><span class="hljs-punctuation">,</span><br>         <span class="hljs-attr">&quot;startingDirectory&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;.&quot;</span><span class="hljs-punctuation">,</span><br>         <span class="hljs-attr">&quot;bellStyle&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;none&quot;</span><br>     <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs json"> <span class="hljs-string">&quot;profiles&quot;</span>:<br> &#123;<br>     <span class="hljs-attr">&quot;defaults&quot;</span>:<br>     &#123;<br>         <span class="hljs-comment">// Put settings here that you want to apply to all profiles.</span><br>         <span class="hljs-comment">// &quot;colorScheme&quot;: &quot;Dracula&quot;,</span><br>         <span class="hljs-comment">//&quot;acrylicOpacity&quot; : 0.4,</span><br>         <span class="hljs-attr">&quot;useAcrylic&quot;</span> : <span class="hljs-literal">true</span>,<br>         <span class="hljs-attr">&quot;fontSize&quot;</span>:<span class="hljs-number">13</span>,<br>         <span class="hljs-attr">&quot;fontFace&quot;</span>: <span class="hljs-string">&quot;FiraCode Nerd Font&quot;</span>,<br>         <span class="hljs-attr">&quot;startingDirectory&quot;</span>: <span class="hljs-string">&quot;.&quot;</span>,<br>         <span class="hljs-attr">&quot;bellStyle&quot;</span>:<span class="hljs-string">&quot;none&quot;</span><br>     &#125;,<br>&#125;<br></code></pre></td></tr></table></figure>
 </li>
 <li><p>如果完成了上述的安装流程，那么你在<code>Windows Terminal</code>中进入<code>WSL2</code>环境后，输入<code>tmux</code>应该就可以看到图1的效果了。</p>
 </li>
@@ -511,7 +511,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2022年10月16日</div>
+          <div>2022年10月23日</div>
         </div>
       
       

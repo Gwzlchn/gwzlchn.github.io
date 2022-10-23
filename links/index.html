@@ -235,6 +235,24 @@
   
     
     <div class="card col-lg-4 col-md-6 col-sm-12">
+      <a href="https://gloriallluo.github.io/" class="card-body hover-with-bg" target="_blank" rel="noopener">
+        <div class="card-content">
+          
+            <div class="link-avatar my-auto">
+              <img src="https://gloriallluo.github.io/assets/img/harpseal.jpeg" srcset="/img/loading.gif" lazyload alt="gloriallluo"
+                   onerror="this.onerror=null; this.src=this.srcset='/img/avatar.png'"/>
+            </div>
+          
+          <div class="link-text">
+            <div class="link-title">gloriallluo</div>
+            <div class="link-intro"></div>
+          </div>
+        </div>
+      </a>
+    </div>
+  
+    
+    <div class="card col-lg-4 col-md-6 col-sm-12">
       <a href="https://rmheng.github.io/" class="card-body hover-with-bg" target="_blank" rel="noopener">
         <div class="card-content">
           
@@ -254,6 +272,35 @@
 </div>
 
 
+  <!-- Custom -->
+  <div class="custom mx-auto">
+    <hr><p>欢迎交换友链～留言/邮件我均可</p>
+  </div>
+
+
+
+  <article id="comments" lazyload>
+    
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.7.2/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"92499b3e9ca46e054919","clientSecret":"eef0bc1146a28cdb3d17fd4cf149158cab4ffa2f","repo":"gwzlchn.github.io","owner":"Gwzlchn","admin":["Gwzlchn"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '38687fdbcd50268b872dd8c493f739e6'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
 
 
 
